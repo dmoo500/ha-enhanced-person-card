@@ -194,6 +194,8 @@ class EnhancedPersonCard extends HTMLElement {
         this.style.setProperty('--dynamic-icon-size', `${iconSize}px`);
         
         // Handle grid column properties for proper layout
+        // --grid-column-count: calc( var(--base-column-count) * var(--column-span, 1) );
+        // --grid-column-count: calc( var(--base-column-count) * var(--column-span, 1) );
         if (layoutColumns === 'full') {
             // Full width: span all columns and take full container width
             this.style.setProperty('--card-width', '100%');
@@ -204,7 +206,7 @@ class EnhancedPersonCard extends HTMLElement {
             this.style.setProperty('--card-margin', '0');
         }
         else if (typeof layoutColumns === 'number' && layoutColumns > 1) {
-            this.style.setProperty('--card-grid-column', `span ${layoutColumns}`);
+            this.style.setProperty('--card-grid-column', `calc( var(--base-column-count) * var(--column-span, 1)`);
             // Reset full-width properties
             this.style.removeProperty('--card-width');
             this.style.removeProperty('--card-flex-grow');
@@ -868,10 +870,12 @@ class EnhancedPersonCard extends HTMLElement {
         const dynamicHeight = '100%';
         return `
       <style>
-        host {
+        :host {
+            --row-gap: var(--ha-section-grid-row-gap, 8px);
+            --column-gap: var(--ha-section-grid-column-gap, 8px);
+            --row-height: var(--ha-section-grid-row-height, 56px);
             display: block;
             border-radius: 16px;
-            padding: 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
@@ -887,7 +891,7 @@ class EnhancedPersonCard extends HTMLElement {
           cursor: pointer;
           transition: all 0.2s ease;
           min-height: ${layoutRows > 1 ? dynamicHeight : 'var(--card-min-height, 120px)'};
-          ${layoutRows > 1 ? `height: ${dynamicHeight} !important;` : ''}
+	      height: calc((var(--row-size,1) * (var(--row-height) + var(--row-gap))) - var(--row-gap));
           box-sizing: border-box;
           font-family: var(--paper-font-body1_-_font-family);
           width: 100%;
