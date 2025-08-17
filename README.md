@@ -8,25 +8,19 @@ An advanced person card for Home Assistant with intelligent device tracking, com
 
 ## ✨ Key Features
 
-- **🔋 Smart Sensor Assignment**: Automatic detection and assignment of device sensors with cross-device protection
-- **📱 Enhanced Device Display**: Detailed information for each device tracker with visual indicators
-- **🏗️ Responsive Grid Layout**: Flexible sizing that adapts to modern Home Assistant dashboards
-- **🎨 Customizable Attributes**: Configurable display of battery level, GPS accuracy, zones, and more
-- **🚫 Cross-Device Protection**: Prevents duplicate sensor assignments between similar device names
+- **👤 Advanced Person Tracking**: Intelligent display of person entities with comprehensive location and device information
+- **📱 Smart Device Integration**: Automatically detects and displays all associated device trackers with their sensors
+- **🎨 Customizable Attributes**: Configurable display of battery level, GPS accuracy, zones, and more device-specific data
+- **📐 Responsive Grid Layout**: Native Home Assistant grid support with automatic icon sizing for any dashboard layout
 - **🔧 Visual Configuration**: Easy setup through the Home Assistant UI editor
-- **🎯 Full-Width Support**: Optimal display across different dashboard layouts
+- **🚫 Flexible Device Management**: Exclude unwanted device trackers and customize which attributes to display
 
-## 🎯 Problem Solving
-
-This card specifically addresses common issues with device tracking:
-- Resolves duplicate sensor assignments for similar device names (e.g., "MacBook Pro" vs "MacBook Pro von Name")
-- Eliminates battery level duplication across devices
-- Provides accurate sensor-to-device matching using device IDs and strict name matching
-- Offers proper responsive sizing for wide dashboard layouts
 
 ## 📦 Installation
 
 ### HACS (Recommended)
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=dmoo500&repository=ha-enhanced-person-card&category=frontend)
 
 1. Open HACS in Home Assistant
 2. Go to "Frontend" 
