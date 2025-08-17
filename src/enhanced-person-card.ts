@@ -868,19 +868,12 @@ class EnhancedPersonCard extends HTMLElement {
         const dynamicHeight = '100%';
         return `
       <style>
-        :host {
-          display: block;
-          ${layoutRows > 1 ? `min-height: ${dynamicHeight}; height: ${dynamicHeight};` : ''}
-          
-          /* Grid Layout Support */
-          width: var(--card-width, auto);
-          max-width: var(--card-max-width, none);
-          margin: var(--card-margin, initial);
-          flex-grow: var(--card-flex-grow, 0);
-          grid-column: var(--card-grid-column, auto);
-          
-          /* Full width support */
-          box-sizing: border-box;
+        host {
+            display: block;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         .person-card {
@@ -1207,7 +1200,10 @@ class EnhancedPersonCard extends HTMLElement {
         }
 
         /* Responsive Design */
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
+          :host {
+            padding: 15px;
+          }
           .person-card {
             flex-direction: column;
             gap: 12px;
@@ -1215,7 +1211,6 @@ class EnhancedPersonCard extends HTMLElement {
           
           .person-left-section {
             flex: none;
-            width: 100%;
             justify-content: center;
           }
           
@@ -1232,7 +1227,24 @@ class EnhancedPersonCard extends HTMLElement {
           .fallback-icon ha-icon {
             --mdc-icon-size: calc(var(--dynamic-icon-size, 80px) * 0.6) !important;
           }
-        }
+
+          .device-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: transparent;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+          }          
+          
+          .person-devices-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+          }
       </style>
     `;
     }
