@@ -1,0 +1,43 @@
+{
+  "name": "ha-enhanced-person-card",
+  "version": "1.3.0",
+  "description": "An advanced person card for Home Assistant with intelligent device tracking, comprehensive sensor integration, and responsive grid layout support",
+  "main": "enhanced-person-card.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist enhanced-person-card.js",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "home-assistant",
+    "custom-card", 
+    "enhanced-person-card",
+    "device-tracking",
+    "sensor-integration",
+    "hacs",
+    "lovelace",
+    "typescript"
+  ],
+  "author": "dmoo500",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dmoo500/ha-enhanced-person-card.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dmoo500/ha-enhanced-person-card/issues"
+  },
+  "homepage": "https://github.com/dmoo500/ha-enhanced-person-card#readme",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "enhanced-person-card.js",
+    "README.md",
+    "LICENSE",
+    "hacs.json",
+    "info.md",
+    "CHANGELOG.md"
+  ]
+}

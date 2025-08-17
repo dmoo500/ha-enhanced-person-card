@@ -1,0 +1,10 @@
+{
+  "name": "Enhanced Person Card",
+  "content_in_root": true,
+  "filename": "enhanced-person-card.js",
+  "render_readme": true,
+  "iot_class": "Local Polling",
+  "homeassistant": "2024.1.0",
+  "domains": ["person"],
+  "persistent_directory": false
+}
