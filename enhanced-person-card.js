@@ -79,7 +79,7 @@
           border-radius: var(--ha-card-border-radius);
           border: var(--ha-card-border-width, 1px) solid var(--ha-card-border-color, var(--divider-color));
           box-shadow: var(--ha-card-box-shadow);
-          padding: var(--ha-card-padding, 16px);
+          padding: var(--ha-card-padding, 15px);
           display: flex;
           flex-direction: column;
           cursor: pointer;
@@ -399,9 +399,6 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-          :host {
-            padding: 15px;
-          }
           .person-card {
             flex-direction: column;
             gap: 12px;
