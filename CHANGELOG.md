@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## v2.0.0 - 2025-08-31
+
+### Added
+- Visual Editor: Fully modernized Lovelace editor based on LitElement
+- Configuration editor now preserves all Lovelace layout options (e.g., full width)
+- Device attributes: Shows the `friendly_name` next to the attribute name if multiple attributes with the same name (e.g., several "Battery") are present
+- Device click: Clicking a device now opens the Home Assistant more-info dialog for that device
+
+### Improved
+- Improved dynamic display and sizing (uses Home Assistant calculations)
+- Better assignment and display of device and sensor attributes
+- Responsive design and optimized appearance on all devices
+
+### Fixed
+- Editor: Layout options like "full width card" are no longer overwritten when saving
+- Correct display and assignment of multiple attributes with the same name (e.g., Battery)
+
+---
+
 ## v1.3.2 - 2025-08-17
 
 - Fix: Improved dynamic display and sizing (use the HA calculations)

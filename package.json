@@ -1,6 +1,6 @@
 {
   "name": "ha-enhanced-person-card",
-  "version": "1.3.3",
+  "version": "2.0.0",
   "description": "An advanced person card for Home Assistant with intelligent device tracking, comprehensive sensor integration, and responsive grid layout support",
   "main": "enhanced-person-card.js",
   "scripts": {

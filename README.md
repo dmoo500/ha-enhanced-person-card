@@ -15,6 +15,15 @@ An advanced person card for Home Assistant with intelligent device tracking, com
 - **🔧 Visual Configuration**: Easy setup through the Home Assistant UI editor
 - **🚫 Flexible Device Management**: Exclude unwanted device trackers and customize which attributes to display
 
+## 📱 Screenshots
+
+with Name
+
+<img src="docs/images/screenshot_with_name.png" width="250" />
+
+without Name
+
+<img src="docs/images/screenshot_2devices.png" width="250" />
 
 ## 📦 Installation
 
@@ -31,15 +40,19 @@ An advanced person card for Home Assistant with intelligent device tracking, com
 7. Restart Home Assistant
 8. Add the card resource to your dashboard
 
-### Manual Installation
-
-1. Download `enhanced-person-card.js` from the latest release
-2. Copy to `config/www/community/enhanced-person-card/`
-3. Add resource in Home Assistant (Settings → Dashboards → Resources):
-   ```yaml
-   url: /hacsfiles/enhanced-person-card/enhanced-person-card.js
-   type: module
-   ```
+### Manual
+1. Download the latest `enhanced-person-card.js` from [Releases](https://github.com/dmoo500/ha-enhanced-person-card/releases)
+2. Copy it to your `config/www/` folder (so the path is `/config/www/enhanced-person-card.js`)
+3. In Home Assistant, go to **Settings → Dashboards → More Options (⋮) → Resources**
+4. Click **Add Resource** and enter:
+   - **URL:** `/local/enhanced-person-card.js`
+   - **Type:** `module`
+5. Click **Create** and reload the dashboard (or restart Home Assistant if required)
+6. Now add a new card to your dashboard:
+   - Click **Edit Dashboard**
+   - Click **Add Card**
+   - Search for **SwissWeather Card** or choose **Custom: SwissWeather Card**
+   - Configure the card as desired and save
 
 ## ⚙️ Configuration
 
