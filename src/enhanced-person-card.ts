@@ -723,15 +723,17 @@ export class EnhancedPersonCard extends LitElement {
                   ${(() => {
                     // Zähle, wie oft jedes Label vorkommt
                     const labelCounts: Record<string, number> = {};
-                    availableAttributes.forEach(attr => {
-                      labelCounts[attr.label] = (labelCounts[attr.label] || 0) + 1;
+                    availableAttributes.forEach((attr) => {
+                      labelCounts[attr.label] =
+                        (labelCounts[attr.label] || 0) + 1;
                     });
                     return availableAttributes.map(
                       (attr) => html`
                         <span
                           class="device-attribute"
                           data-attribute="${attr.name}"
-                          title="${attr.label}: ${attr.displayValue} (${attr.entityName || deviceName})"
+                          title="${attr.label}: ${attr.displayValue} (${attr.entityName ||
+                          deviceName})"
                         >
                           <span
                             class="attribute-icon"
@@ -741,14 +743,18 @@ export class EnhancedPersonCard extends LitElement {
                           </span>
                           <span class="attribute-name">
                             ${attr.label}
-                            ${labelCounts[attr.label] > 1 && attr.entityName ? html`<span class="attribute-entity"> (${attr.entityName})</span>` : ''}
+                            ${labelCounts[attr.label] > 1 && attr.entityName
+                              ? html`<span class="attribute-entity">
+                                  (${attr.entityName})</span
+                                >`
+                              : ""}
                             :
                           </span>
                           <span class="attribute-value"
                             >${attr.displayValue}</span
                           >
                         </span>
-                      `
+                      `,
                     );
                   })()}
                 </div>
@@ -771,7 +777,7 @@ export class EnhancedPersonCard extends LitElement {
     }
     e.stopPropagation();
   }
-    /**
+  /**
    * Öffnet das Standard-HA-Dialog für das angeklickte Gerät
    */
   private _showMoreInfo(entityId: string) {

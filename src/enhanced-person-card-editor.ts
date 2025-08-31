@@ -149,8 +149,8 @@ export class EnhancedPersonCardEditor
       `;
     }
 
-  // Übernehme alle Felder aus der Original-Config, damit HA-Layout-Optionen erhalten bleiben
-  const data = { ...this._config };
+    // Übernehme alle Felder aus der Original-Config, damit HA-Layout-Optionen erhalten bleiben
+    const data = { ...this._config };
 
     return html`
       <div class="card-config">

@@ -92,5 +92,8 @@ export const schema = [
       },
     },
   },
-  { name: "excluded_entities", selector: { entity: { multiple: true }, domain: "device_tracker" } },
+  {
+    name: "excluded_entities",
+    selector: { entity: { multiple: true }, domain: "device_tracker" },
+  },
 ];
