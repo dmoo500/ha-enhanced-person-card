@@ -1,96 +1,1146 @@
-"use strict";(()=>{var w=class extends HTMLElement{constructor(){super();this._hass=null;this._config=null;this._initialized=!1;this._lastEntityState="";this._lastEntityAttributes=null;this._lastDevicesData=[];this._lastConfigHash="";this._rendered=!1;this._usedSensors=new Set;this.attachShadow({mode:"open"}),this._render()}set hass(e){this._hass=e||null,this._initialized&&this._updateIfNeeded()}get hass(){return this._hass||void 0}setConfig(e){var s,a,i,n,c,d,o,u;if(!e)throw new Error("Invalid configuration");if(!e.entity)throw new Error("You need to define an entity");let t=this._config;this._config=e,this._initialized=!0,this._lastConfigHash="",this._rendered=!1,(((s=t==null?void 0:t.grid_options)==null?void 0:s.rows)!==((a=e==null?void 0:e.grid_options)==null?void 0:a.rows)||((i=t==null?void 0:t.layout_options)==null?void 0:i.grid_rows)!==((n=e==null?void 0:e.layout_options)==null?void 0:n.grid_rows)||(t==null?void 0:t.grid_rows)!==(e==null?void 0:e.grid_rows)||((c=t==null?void 0:t.grid_options)==null?void 0:c.columns)!==((d=e==null?void 0:e.grid_options)==null?void 0:d.columns)||((o=t==null?void 0:t.layout_options)==null?void 0:o.grid_columns)!==((u=e==null?void 0:e.layout_options)==null?void 0:u.grid_columns)||(t==null?void 0:t.grid_columns)!==(e==null?void 0:e.grid_columns))&&this._updateDynamicStyles(),this._hass?this._updateIfNeeded():this._render()}getCardSize(){var e,t,r,s;return(t=(e=this._config)==null?void 0:e.grid_options)!=null&&t.rows?Number(this._config.grid_options.rows):(s=(r=this._config)==null?void 0:r.layout_options)!=null&&s.grid_rows?Number(this._config.layout_options.grid_rows):this._config&&"grid_rows"in this._config?Number(this._config.grid_rows):3}getCardColumns(){var e,t,r,s;return((t=(e=this._config)==null?void 0:e.grid_options)==null?void 0:t.columns)!==void 0?this._config.grid_options.columns:((s=(r=this._config)==null?void 0:r.layout_options)==null?void 0:s.grid_columns)!==void 0?this._config.layout_options.grid_columns:this._config&&"grid_columns"in this._config&&this._config.grid_columns!==void 0?this._config.grid_columns:1}_updateDynamicStyles(){var d,o,u,l,_;if(!this.shadowRoot)return;let e=((o=(d=this._config)==null?void 0:d.grid_options)==null?void 0:o.rows)||((l=(u=this._config)==null?void 0:u.layout_options)==null?void 0:l.grid_rows)||((_=this._config)==null?void 0:_.grid_rows)||this.getCardSize(),t=this.getCardColumns(),r=t==="full"?12:typeof t=="number"?t:1,s=40;r===1?s=Math.max(60,e*20+40):r===2?s=Math.max(70,e*22+50):r>=3&&r<=5?s=Math.max(80,e*25+60):r>=6&&r<=8?s=Math.max(55,e*15+40):r>=9&&(s=Math.max(40,e*8+25));let a=Math.max(1,e);s=s+(a-1)*8;let i,n;if(r>=9?(i=30,n=60):r>=6?(i=40,n=90):r>=3?(i=60,n=140):(i=50,n=120),s=Math.max(i,Math.min(n,s)),this.style.setProperty("--dynamic-icon-size",`${s}px`),t==="full"?(this.style.setProperty("--card-width","100%"),this.style.setProperty("--card-flex-grow","1"),this.style.setProperty("--card-grid-column","1 / -1"),this.style.setProperty("--card-max-width","none"),this.style.setProperty("--card-margin","0")):typeof t=="number"&&t>1?(this.style.setProperty("--card-grid-column","calc( var(--base-column-count) * var(--column-span, 1)"),this.style.removeProperty("--card-width"),this.style.removeProperty("--card-flex-grow"),this.style.removeProperty("--card-max-width"),this.style.removeProperty("--card-margin")):(this.style.removeProperty("--card-width"),this.style.removeProperty("--card-flex-grow"),this.style.removeProperty("--card-grid-column"),this.style.removeProperty("--card-max-width"),this.style.removeProperty("--card-margin")),e>1){let g=`${e*80}px`;this.style.setProperty("--dynamic-height",g)}let c;t==="full"||r>=12?c="12%":r>=9?c="15%":r>=6?c="20%":r>=3?c="25%":c="30%",this.style.setProperty("--person-left-width",c)}_updateIfNeeded(){if(!this._hass||!this._config||!this._initialized){this._render();return}let e=this._config.entity,t=this._hass.states[e];if(!t){this._render();return}let r=t.state,s=t.attributes,a=this._getPersonDevices(t),i=JSON.stringify({name:this._config.name,image:this._config.image,icon:this._config.icon,show_name:this._config.show_name,show_state:this._config.show_state,show_devices:this._config.show_devices,badge_style:this._config.badge_style,device_attributes:this._config.device_attributes}),n=this._lastEntityState!==r,c=JSON.stringify(this._lastEntityAttributes)!==JSON.stringify(s),d=JSON.stringify(this._lastDevicesData)!==JSON.stringify(a),o=this._lastConfigHash!==i;(n||c||d||o||!this._rendered)&&(this._lastEntityState=r,this._lastEntityAttributes=s,this._lastDevicesData=a,this._lastConfigHash=i,this._render())}_getPersonDevices(e){if(!this._hass||!e)return[];let t=this._config,r=(t==null?void 0:t.excluded_entities)||[],s=e.entity_id,a=[];return e.attributes.device_trackers&&Array.isArray(e.attributes.device_trackers)&&e.attributes.device_trackers.forEach(i=>{if(!r.includes(i)){let n=this._hass.states[i];n&&n.attributes.source_type&&a.push(n)}}),a.length===0&&Object.values(this._hass.states).forEach(i=>{i.entity_id.startsWith("device_tracker.")&&!r.includes(i.entity_id)&&i.attributes.source_type&&i.attributes.person===s&&a.push(i)}),a.sort((i,n)=>{let c=i.attributes.friendly_name||i.entity_id;return(n.attributes.friendly_name||n.entity_id).length-c.length}),a}_getAttributeLabel(e){return{battery_level:"Battery",gps_accuracy:"GPS Accuracy",source_type:"Source",zone:"Zone",latitude:"Latitude",longitude:"Longitude",altitude:"Altitude",course:"Course",speed:"Speed",ip:"IP Address",hostname:"Hostname",mac:"MAC Address",last_seen:"Last Seen"}[e]||e}_getAttributeIcon(e,t){switch(e){case"battery_level":let r=parseInt(t);return r>80?{icon:"mdi:battery",color:"#4caf50"}:r>60?{icon:"mdi:battery-60",color:"#8bc34a"}:r>40?{icon:"mdi:battery-40",color:"#ff9800"}:r>20?{icon:"mdi:battery-20",color:"#ff5722"}:{icon:"mdi:battery-alert",color:"#f44336"};case"gps_accuracy":let s=parseInt(t);return s<=10?{icon:"mdi:crosshairs-gps",color:"#4caf50"}:s<=50?{icon:"mdi:crosshairs-gps",color:"#ff9800"}:{icon:"mdi:crosshairs-question",color:"#f44336"};case"source_type":switch(t){case"gps":return{icon:"mdi:crosshairs-gps",color:"#2196f3"};case"bluetooth":return{icon:"mdi:bluetooth",color:"#3f51b5"};case"router":return{icon:"mdi:router-wireless",color:"#607d8b"};default:return{icon:"mdi:help-circle",color:"#757575"}}case"altitude":return{icon:"mdi:elevation-rise",color:"#795548"};case"course":return{icon:"mdi:compass",color:"#9c27b0"};case"speed":let a=parseInt(t);return a>50?{icon:"mdi:speedometer",color:"#f44336"}:a>10?{icon:"mdi:speedometer-medium",color:"#ff9800"}:{icon:"mdi:speedometer-slow",color:"#4caf50"};case"zone":return{icon:"mdi:map-marker-radius",color:"#2196f3"};case"latitude":return{icon:"mdi:latitude",color:"#9c27b0"};case"longitude":return{icon:"mdi:longitude",color:"#9c27b0"};case"ip":return{icon:"mdi:ip-network",color:"#607d8b"};case"hostname":return{icon:"mdi:dns",color:"#607d8b"};case"mac":return{icon:"mdi:network",color:"#607d8b"};case"last_seen":return{icon:"mdi:clock-outline",color:"#757575"};default:return{icon:"mdi:information-outline",color:"#757575"}}}_getAttributeDisplayValue(e,t){switch(e){case"battery_level":return`${t}%`;case"gps_accuracy":return`${t}m`;case"altitude":return`${t}m`;case"speed":return`${t} km/h`;case"course":return`${t}\xB0`;case"zone":return String(t).replace(/_/g," ");case"latitude":return`${parseFloat(t).toFixed(4)}\xB0`;case"longitude":return`${parseFloat(t).toFixed(4)}\xB0`;case"ip":return String(t);case"hostname":return String(t);case"mac":return String(t).toUpperCase();case"last_seen":if(t&&(t.includes("T")||t.includes("-")))try{return new Date(t).toLocaleTimeString()}catch{return String(t)}return String(t);default:return String(t)}}_render(){if(!this.shadowRoot){console.warn("\u26A0\uFE0F Shadow Root not available");return}if(this._usedSensors.clear(),!this._initialized||!this._config){this.shadowRoot.innerHTML=this._getLoadingHTML();return}if(!this._hass){this.shadowRoot.innerHTML=this._getNoHassHTML();return}let e=this._config.entity,t=this._hass.states[e];if(!t){this.shadowRoot.innerHTML=this._getEntityNotFoundHTML(e);return}this.shadowRoot.innerHTML=this._getCardHTML(t),this._attachEventListeners(),this._updateDynamicStyles(),this._rendered=!0}_getLoadingHTML(){return`
-      ${this._getStyles()}
-      <div class="person-card loading">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Loading...</div>
-      </div>
-    `}_getNoHassHTML(){return`
-      ${this._getStyles()}
-      <div class="person-card error">
-        <div class="error-icon">\u26A0\uFE0F</div>
-        <div class="error-text">Home Assistant not available</div>
-      </div>
-    `}_getEntityNotFoundHTML(e){return`
-      ${this._getStyles()}
-      <div class="person-card error">
-        <div class="error-icon">\u274C</div>
-        <div class="error-text">Entity "${e}" not found</div>
-      </div>
-    `}_getCardHTML(e){let t=this._config,r=t.name||e.attributes.friendly_name||t.entity,s=e.state,a=t.image||e.attributes.entity_picture,i=t.icon,n=t.show_name!==!1,c=t.show_state!==!1,d=t.show_devices!==!1,o=this._getStateText(s),u=this._getStateClass(s),l=this._getPersonDevices(e);return`
-      ${this._getStyles()}
-      <div class="person-card" data-entity="${t.entity}">
-        ${n?`<div class="person-header">
-          <div class="person-name">${r}</div>
-        </div>`:""}
-        <div class="person-content">
-          <div class="person-left-section">
-            <div class="person-avatar-container">
-              <div class="person-avatar">
-                ${this._renderIcon(a,i,r)}
-              </div>
-              ${c?`<div class="person-status-badge ${u} ${t.badge_style==="icon_only"?"icon-only":""}">${o}</div>`:""}
-            </div>
+/**
+ * @license
+ * Copyright 2019 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const Y = globalThis, pe = Y.ShadowRoot && (Y.ShadyCSS === void 0 || Y.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, fe = Symbol(), Ce = /* @__PURE__ */ new WeakMap();
+let Ve = class {
+  constructor(e, t, i) {
+    if (this._$cssResult$ = !0, i !== fe) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
+    this.cssText = e, this.t = t;
+  }
+  get styleSheet() {
+    let e = this.o;
+    const t = this.t;
+    if (pe && e === void 0) {
+      const i = t !== void 0 && t.length === 1;
+      i && (e = Ce.get(t)), e === void 0 && ((this.o = e = new CSSStyleSheet()).replaceSync(this.cssText), i && Ce.set(t, e));
+    }
+    return e;
+  }
+  toString() {
+    return this.cssText;
+  }
+};
+const rt = (s) => new Ve(typeof s == "string" ? s : s + "", void 0, fe), We = (s, ...e) => {
+  const t = s.length === 1 ? s[0] : e.reduce(((i, r, n) => i + ((o) => {
+    if (o._$cssResult$ === !0) return o.cssText;
+    if (typeof o == "number") return o;
+    throw Error("Value passed to 'css' function must be a 'css' function result: " + o + ". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.");
+  })(r) + s[n + 1]), s[0]);
+  return new Ve(t, s, fe);
+}, nt = (s, e) => {
+  if (pe) s.adoptedStyleSheets = e.map(((t) => t instanceof CSSStyleSheet ? t : t.styleSheet));
+  else for (const t of e) {
+    const i = document.createElement("style"), r = Y.litNonce;
+    r !== void 0 && i.setAttribute("nonce", r), i.textContent = t.cssText, s.appendChild(i);
+  }
+}, Se = pe ? (s) => s : (s) => s instanceof CSSStyleSheet ? ((e) => {
+  let t = "";
+  for (const i of e.cssRules) t += i.cssText;
+  return rt(t);
+})(s) : s;
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const { is: ot, defineProperty: at, getOwnPropertyDescriptor: ct, getOwnPropertyNames: lt, getOwnPropertySymbols: dt, getPrototypeOf: ht } = Object, te = globalThis, Ee = te.trustedTypes, ut = Ee ? Ee.emptyScript : "", pt = te.reactiveElementPolyfillSupport, B = (s, e) => s, J = { toAttribute(s, e) {
+  switch (e) {
+    case Boolean:
+      s = s ? ut : null;
+      break;
+    case Object:
+    case Array:
+      s = s == null ? s : JSON.stringify(s);
+  }
+  return s;
+}, fromAttribute(s, e) {
+  let t = s;
+  switch (e) {
+    case Boolean:
+      t = s !== null;
+      break;
+    case Number:
+      t = s === null ? null : Number(s);
+      break;
+    case Object:
+    case Array:
+      try {
+        t = JSON.parse(s);
+      } catch {
+        t = null;
+      }
+  }
+  return t;
+} }, _e = (s, e) => !ot(s, e), Pe = { attribute: !0, type: String, converter: J, reflect: !1, useDefault: !1, hasChanged: _e };
+Symbol.metadata ??= Symbol("metadata"), te.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
+let N = class extends HTMLElement {
+  static addInitializer(e) {
+    this._$Ei(), (this.l ??= []).push(e);
+  }
+  static get observedAttributes() {
+    return this.finalize(), this._$Eh && [...this._$Eh.keys()];
+  }
+  static createProperty(e, t = Pe) {
+    if (t.state && (t.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(e) && ((t = Object.create(t)).wrapped = !0), this.elementProperties.set(e, t), !t.noAccessor) {
+      const i = Symbol(), r = this.getPropertyDescriptor(e, i, t);
+      r !== void 0 && at(this.prototype, e, r);
+    }
+  }
+  static getPropertyDescriptor(e, t, i) {
+    const { get: r, set: n } = ct(this.prototype, e) ?? { get() {
+      return this[t];
+    }, set(o) {
+      this[t] = o;
+    } };
+    return { get: r, set(o) {
+      const d = r?.call(this);
+      n?.call(this, o), this.requestUpdate(e, d, i);
+    }, configurable: !0, enumerable: !0 };
+  }
+  static getPropertyOptions(e) {
+    return this.elementProperties.get(e) ?? Pe;
+  }
+  static _$Ei() {
+    if (this.hasOwnProperty(B("elementProperties"))) return;
+    const e = ht(this);
+    e.finalize(), e.l !== void 0 && (this.l = [...e.l]), this.elementProperties = new Map(e.elementProperties);
+  }
+  static finalize() {
+    if (this.hasOwnProperty(B("finalized"))) return;
+    if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(B("properties"))) {
+      const t = this.properties, i = [...lt(t), ...dt(t)];
+      for (const r of i) this.createProperty(r, t[r]);
+    }
+    const e = this[Symbol.metadata];
+    if (e !== null) {
+      const t = litPropertyMetadata.get(e);
+      if (t !== void 0) for (const [i, r] of t) this.elementProperties.set(i, r);
+    }
+    this._$Eh = /* @__PURE__ */ new Map();
+    for (const [t, i] of this.elementProperties) {
+      const r = this._$Eu(t, i);
+      r !== void 0 && this._$Eh.set(r, t);
+    }
+    this.elementStyles = this.finalizeStyles(this.styles);
+  }
+  static finalizeStyles(e) {
+    const t = [];
+    if (Array.isArray(e)) {
+      const i = new Set(e.flat(1 / 0).reverse());
+      for (const r of i) t.unshift(Se(r));
+    } else e !== void 0 && t.push(Se(e));
+    return t;
+  }
+  static _$Eu(e, t) {
+    const i = t.attribute;
+    return i === !1 ? void 0 : typeof i == "string" ? i : typeof e == "string" ? e.toLowerCase() : void 0;
+  }
+  constructor() {
+    super(), this._$Ep = void 0, this.isUpdatePending = !1, this.hasUpdated = !1, this._$Em = null, this._$Ev();
+  }
+  _$Ev() {
+    this._$ES = new Promise(((e) => this.enableUpdating = e)), this._$AL = /* @__PURE__ */ new Map(), this._$E_(), this.requestUpdate(), this.constructor.l?.forEach(((e) => e(this)));
+  }
+  addController(e) {
+    (this._$EO ??= /* @__PURE__ */ new Set()).add(e), this.renderRoot !== void 0 && this.isConnected && e.hostConnected?.();
+  }
+  removeController(e) {
+    this._$EO?.delete(e);
+  }
+  _$E_() {
+    const e = /* @__PURE__ */ new Map(), t = this.constructor.elementProperties;
+    for (const i of t.keys()) this.hasOwnProperty(i) && (e.set(i, this[i]), delete this[i]);
+    e.size > 0 && (this._$Ep = e);
+  }
+  createRenderRoot() {
+    const e = this.shadowRoot ?? this.attachShadow(this.constructor.shadowRootOptions);
+    return nt(e, this.constructor.elementStyles), e;
+  }
+  connectedCallback() {
+    this.renderRoot ??= this.createRenderRoot(), this.enableUpdating(!0), this._$EO?.forEach(((e) => e.hostConnected?.()));
+  }
+  enableUpdating(e) {
+  }
+  disconnectedCallback() {
+    this._$EO?.forEach(((e) => e.hostDisconnected?.()));
+  }
+  attributeChangedCallback(e, t, i) {
+    this._$AK(e, i);
+  }
+  _$ET(e, t) {
+    const i = this.constructor.elementProperties.get(e), r = this.constructor._$Eu(e, i);
+    if (r !== void 0 && i.reflect === !0) {
+      const n = (i.converter?.toAttribute !== void 0 ? i.converter : J).toAttribute(t, i.type);
+      this._$Em = e, n == null ? this.removeAttribute(r) : this.setAttribute(r, n), this._$Em = null;
+    }
+  }
+  _$AK(e, t) {
+    const i = this.constructor, r = i._$Eh.get(e);
+    if (r !== void 0 && this._$Em !== r) {
+      const n = i.getPropertyOptions(r), o = typeof n.converter == "function" ? { fromAttribute: n.converter } : n.converter?.fromAttribute !== void 0 ? n.converter : J;
+      this._$Em = r;
+      const d = o.fromAttribute(t, n.type);
+      this[r] = d ?? this._$Ej?.get(r) ?? d, this._$Em = null;
+    }
+  }
+  requestUpdate(e, t, i) {
+    if (e !== void 0) {
+      const r = this.constructor, n = this[e];
+      if (i ??= r.getPropertyOptions(e), !((i.hasChanged ?? _e)(n, t) || i.useDefault && i.reflect && n === this._$Ej?.get(e) && !this.hasAttribute(r._$Eu(e, i)))) return;
+      this.C(e, t, i);
+    }
+    this.isUpdatePending === !1 && (this._$ES = this._$EP());
+  }
+  C(e, t, { useDefault: i, reflect: r, wrapped: n }, o) {
+    i && !(this._$Ej ??= /* @__PURE__ */ new Map()).has(e) && (this._$Ej.set(e, o ?? t ?? this[e]), n !== !0 || o !== void 0) || (this._$AL.has(e) || (this.hasUpdated || i || (t = void 0), this._$AL.set(e, t)), r === !0 && this._$Em !== e && (this._$Eq ??= /* @__PURE__ */ new Set()).add(e));
+  }
+  async _$EP() {
+    this.isUpdatePending = !0;
+    try {
+      await this._$ES;
+    } catch (t) {
+      Promise.reject(t);
+    }
+    const e = this.scheduleUpdate();
+    return e != null && await e, !this.isUpdatePending;
+  }
+  scheduleUpdate() {
+    return this.performUpdate();
+  }
+  performUpdate() {
+    if (!this.isUpdatePending) return;
+    if (!this.hasUpdated) {
+      if (this.renderRoot ??= this.createRenderRoot(), this._$Ep) {
+        for (const [r, n] of this._$Ep) this[r] = n;
+        this._$Ep = void 0;
+      }
+      const i = this.constructor.elementProperties;
+      if (i.size > 0) for (const [r, n] of i) {
+        const { wrapped: o } = n, d = this[r];
+        o !== !0 || this._$AL.has(r) || d === void 0 || this.C(r, void 0, n, d);
+      }
+    }
+    let e = !1;
+    const t = this._$AL;
+    try {
+      e = this.shouldUpdate(t), e ? (this.willUpdate(t), this._$EO?.forEach(((i) => i.hostUpdate?.())), this.update(t)) : this._$EM();
+    } catch (i) {
+      throw e = !1, this._$EM(), i;
+    }
+    e && this._$AE(t);
+  }
+  willUpdate(e) {
+  }
+  _$AE(e) {
+    this._$EO?.forEach(((t) => t.hostUpdated?.())), this.hasUpdated || (this.hasUpdated = !0, this.firstUpdated(e)), this.updated(e);
+  }
+  _$EM() {
+    this._$AL = /* @__PURE__ */ new Map(), this.isUpdatePending = !1;
+  }
+  get updateComplete() {
+    return this.getUpdateComplete();
+  }
+  getUpdateComplete() {
+    return this._$ES;
+  }
+  shouldUpdate(e) {
+    return !0;
+  }
+  update(e) {
+    this._$Eq &&= this._$Eq.forEach(((t) => this._$ET(t, this[t]))), this._$EM();
+  }
+  updated(e) {
+  }
+  firstUpdated(e) {
+  }
+};
+N.elementStyles = [], N.shadowRootOptions = { mode: "open" }, N[B("elementProperties")] = /* @__PURE__ */ new Map(), N[B("finalized")] = /* @__PURE__ */ new Map(), pt?.({ ReactiveElement: N }), (te.reactiveElementVersions ??= []).push("2.1.1");
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const ge = globalThis, X = ge.trustedTypes, ke = X ? X.createPolicy("lit-html", { createHTML: (s) => s }) : void 0, Fe = "$lit$", $ = `lit$${Math.random().toFixed(9).slice(2)}$`, qe = "?" + $, ft = `<${qe}>`, S = document, V = () => S.createComment(""), W = (s) => s === null || typeof s != "object" && typeof s != "function", me = Array.isArray, _t = (s) => me(s) || typeof s?.[Symbol.iterator] == "function", ce = `[ 	
+\f\r]`, j = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, He = /-->/g, Ne = />/g, x = RegExp(`>|${ce}(?:([^\\s"'>=/]+)(${ce}*=${ce}*(?:[^ 	
+\f\r"'\`<>=]|("|')|))|$)`, "g"), Me = /'/g, Te = /"/g, Ze = /^(?:script|style|textarea|title)$/i, gt = (s) => (e, ...t) => ({ _$litType$: s, strings: e, values: t }), f = gt(1), T = Symbol.for("lit-noChange"), _ = Symbol.for("lit-nothing"), Ue = /* @__PURE__ */ new WeakMap(), w = S.createTreeWalker(S, 129);
+function Ke(s, e) {
+  if (!me(s) || !s.hasOwnProperty("raw")) throw Error("invalid template strings array");
+  return ke !== void 0 ? ke.createHTML(e) : e;
+}
+const mt = (s, e) => {
+  const t = s.length - 1, i = [];
+  let r, n = e === 2 ? "<svg>" : e === 3 ? "<math>" : "", o = j;
+  for (let d = 0; d < t; d++) {
+    const a = s[d];
+    let c, h, l = -1, u = 0;
+    for (; u < a.length && (o.lastIndex = u, h = o.exec(a), h !== null); ) u = o.lastIndex, o === j ? h[1] === "!--" ? o = He : h[1] !== void 0 ? o = Ne : h[2] !== void 0 ? (Ze.test(h[2]) && (r = RegExp("</" + h[2], "g")), o = x) : h[3] !== void 0 && (o = x) : o === x ? h[0] === ">" ? (o = r ?? j, l = -1) : h[1] === void 0 ? l = -2 : (l = o.lastIndex - h[2].length, c = h[1], o = h[3] === void 0 ? x : h[3] === '"' ? Te : Me) : o === Te || o === Me ? o = x : o === He || o === Ne ? o = j : (o = x, r = void 0);
+    const p = o === x && s[d + 1].startsWith("/>") ? " " : "";
+    n += o === j ? a + ft : l >= 0 ? (i.push(c), a.slice(0, l) + Fe + a.slice(l) + $ + p) : a + $ + (l === -2 ? d : p);
+  }
+  return [Ke(s, n + (s[t] || "<?>") + (e === 2 ? "</svg>" : e === 3 ? "</math>" : "")), i];
+};
+let he = class Ge {
+  constructor({ strings: e, _$litType$: t }, i) {
+    let r;
+    this.parts = [];
+    let n = 0, o = 0;
+    const d = e.length - 1, a = this.parts, [c, h] = mt(e, t);
+    if (this.el = Ge.createElement(c, i), w.currentNode = this.el.content, t === 2 || t === 3) {
+      const l = this.el.content.firstChild;
+      l.replaceWith(...l.childNodes);
+    }
+    for (; (r = w.nextNode()) !== null && a.length < d; ) {
+      if (r.nodeType === 1) {
+        if (r.hasAttributes()) for (const l of r.getAttributeNames()) if (l.endsWith(Fe)) {
+          const u = h[o++], p = r.getAttribute(l).split($), b = /([.?@])?(.*)/.exec(u);
+          a.push({ type: 1, index: n, name: b[2], strings: p, ctor: b[1] === "." ? $t : b[1] === "?" ? yt : b[1] === "@" ? bt : se }), r.removeAttribute(l);
+        } else l.startsWith($) && (a.push({ type: 6, index: n }), r.removeAttribute(l));
+        if (Ze.test(r.tagName)) {
+          const l = r.textContent.split($), u = l.length - 1;
+          if (u > 0) {
+            r.textContent = X ? X.emptyScript : "";
+            for (let p = 0; p < u; p++) r.append(l[p], V()), w.nextNode(), a.push({ type: 2, index: ++n });
+            r.append(l[u], V());
+          }
+        }
+      } else if (r.nodeType === 8) if (r.data === qe) a.push({ type: 2, index: n });
+      else {
+        let l = -1;
+        for (; (l = r.data.indexOf($, l + 1)) !== -1; ) a.push({ type: 7, index: n }), l += $.length - 1;
+      }
+      n++;
+    }
+  }
+  static createElement(e, t) {
+    const i = S.createElement("template");
+    return i.innerHTML = e, i;
+  }
+};
+function U(s, e, t = s, i) {
+  if (e === T) return e;
+  let r = i !== void 0 ? t._$Co?.[i] : t._$Cl;
+  const n = W(e) ? void 0 : e._$litDirective$;
+  return r?.constructor !== n && (r?._$AO?.(!1), n === void 0 ? r = void 0 : (r = new n(s), r._$AT(s, t, i)), i !== void 0 ? (t._$Co ??= [])[i] = r : t._$Cl = r), r !== void 0 && (e = U(s, r._$AS(s, e.values), r, i)), e;
+}
+let vt = class {
+  constructor(e, t) {
+    this._$AV = [], this._$AN = void 0, this._$AD = e, this._$AM = t;
+  }
+  get parentNode() {
+    return this._$AM.parentNode;
+  }
+  get _$AU() {
+    return this._$AM._$AU;
+  }
+  u(e) {
+    const { el: { content: t }, parts: i } = this._$AD, r = (e?.creationScope ?? S).importNode(t, !0);
+    w.currentNode = r;
+    let n = w.nextNode(), o = 0, d = 0, a = i[0];
+    for (; a !== void 0; ) {
+      if (o === a.index) {
+        let c;
+        a.type === 2 ? c = new ve(n, n.nextSibling, this, e) : a.type === 1 ? c = new a.ctor(n, a.name, a.strings, this, e) : a.type === 6 && (c = new xt(n, this, e)), this._$AV.push(c), a = i[++d];
+      }
+      o !== a?.index && (n = w.nextNode(), o++);
+    }
+    return w.currentNode = S, r;
+  }
+  p(e) {
+    let t = 0;
+    for (const i of this._$AV) i !== void 0 && (i.strings !== void 0 ? (i._$AI(e, i, t), t += i.strings.length - 2) : i._$AI(e[t])), t++;
+  }
+}, ve = class Ye {
+  get _$AU() {
+    return this._$AM?._$AU ?? this._$Cv;
+  }
+  constructor(e, t, i, r) {
+    this.type = 2, this._$AH = _, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = i, this.options = r, this._$Cv = r?.isConnected ?? !0;
+  }
+  get parentNode() {
+    let e = this._$AA.parentNode;
+    const t = this._$AM;
+    return t !== void 0 && e?.nodeType === 11 && (e = t.parentNode), e;
+  }
+  get startNode() {
+    return this._$AA;
+  }
+  get endNode() {
+    return this._$AB;
+  }
+  _$AI(e, t = this) {
+    e = U(this, e, t), W(e) ? e === _ || e == null || e === "" ? (this._$AH !== _ && this._$AR(), this._$AH = _) : e !== this._$AH && e !== T && this._(e) : e._$litType$ !== void 0 ? this.$(e) : e.nodeType !== void 0 ? this.T(e) : _t(e) ? this.k(e) : this._(e);
+  }
+  O(e) {
+    return this._$AA.parentNode.insertBefore(e, this._$AB);
+  }
+  T(e) {
+    this._$AH !== e && (this._$AR(), this._$AH = this.O(e));
+  }
+  _(e) {
+    this._$AH !== _ && W(this._$AH) ? this._$AA.nextSibling.data = e : this.T(S.createTextNode(e)), this._$AH = e;
+  }
+  $(e) {
+    const { values: t, _$litType$: i } = e, r = typeof i == "number" ? this._$AC(e) : (i.el === void 0 && (i.el = he.createElement(Ke(i.h, i.h[0]), this.options)), i);
+    if (this._$AH?._$AD === r) this._$AH.p(t);
+    else {
+      const n = new vt(r, this), o = n.u(this.options);
+      n.p(t), this.T(o), this._$AH = n;
+    }
+  }
+  _$AC(e) {
+    let t = Ue.get(e.strings);
+    return t === void 0 && Ue.set(e.strings, t = new he(e)), t;
+  }
+  k(e) {
+    me(this._$AH) || (this._$AH = [], this._$AR());
+    const t = this._$AH;
+    let i, r = 0;
+    for (const n of e) r === t.length ? t.push(i = new Ye(this.O(V()), this.O(V()), this, this.options)) : i = t[r], i._$AI(n), r++;
+    r < t.length && (this._$AR(i && i._$AB.nextSibling, r), t.length = r);
+  }
+  _$AR(e = this._$AA.nextSibling, t) {
+    for (this._$AP?.(!1, !0, t); e !== this._$AB; ) {
+      const i = e.nextSibling;
+      e.remove(), e = i;
+    }
+  }
+  setConnected(e) {
+    this._$AM === void 0 && (this._$Cv = e, this._$AP?.(e));
+  }
+}, se = class {
+  get tagName() {
+    return this.element.tagName;
+  }
+  get _$AU() {
+    return this._$AM._$AU;
+  }
+  constructor(e, t, i, r, n) {
+    this.type = 1, this._$AH = _, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = n, i.length > 2 || i[0] !== "" || i[1] !== "" ? (this._$AH = Array(i.length - 1).fill(new String()), this.strings = i) : this._$AH = _;
+  }
+  _$AI(e, t = this, i, r) {
+    const n = this.strings;
+    let o = !1;
+    if (n === void 0) e = U(this, e, t, 0), o = !W(e) || e !== this._$AH && e !== T, o && (this._$AH = e);
+    else {
+      const d = e;
+      let a, c;
+      for (e = n[0], a = 0; a < n.length - 1; a++) c = U(this, d[i + a], t, a), c === T && (c = this._$AH[a]), o ||= !W(c) || c !== this._$AH[a], c === _ ? e = _ : e !== _ && (e += (c ?? "") + n[a + 1]), this._$AH[a] = c;
+    }
+    o && !r && this.j(e);
+  }
+  j(e) {
+    e === _ ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
+  }
+}, $t = class extends se {
+  constructor() {
+    super(...arguments), this.type = 3;
+  }
+  j(e) {
+    this.element[this.name] = e === _ ? void 0 : e;
+  }
+}, yt = class extends se {
+  constructor() {
+    super(...arguments), this.type = 4;
+  }
+  j(e) {
+    this.element.toggleAttribute(this.name, !!e && e !== _);
+  }
+}, bt = class extends se {
+  constructor(e, t, i, r, n) {
+    super(e, t, i, r, n), this.type = 5;
+  }
+  _$AI(e, t = this) {
+    if ((e = U(this, e, t, 0) ?? _) === T) return;
+    const i = this._$AH, r = e === _ && i !== _ || e.capture !== i.capture || e.once !== i.once || e.passive !== i.passive, n = e !== _ && (i === _ || r);
+    r && this.element.removeEventListener(this.name, this, i), n && this.element.addEventListener(this.name, this, e), this._$AH = e;
+  }
+  handleEvent(e) {
+    typeof this._$AH == "function" ? this._$AH.call(this.options?.host ?? this.element, e) : this._$AH.handleEvent(e);
+  }
+}, xt = class {
+  constructor(e, t, i) {
+    this.element = e, this.type = 6, this._$AN = void 0, this._$AM = t, this.options = i;
+  }
+  get _$AU() {
+    return this._$AM._$AU;
+  }
+  _$AI(e) {
+    U(this, e);
+  }
+};
+const At = ge.litHtmlPolyfillSupport;
+At?.(he, ve), (ge.litHtmlVersions ??= []).push("3.3.1");
+const wt = (s, e, t) => {
+  const i = t?.renderBefore ?? e;
+  let r = i._$litPart$;
+  if (r === void 0) {
+    const n = t?.renderBefore ?? null;
+    i._$litPart$ = r = new ve(e.insertBefore(V(), n), n, void 0, t ?? {});
+  }
+  return r._$AI(s), r;
+};
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const $e = globalThis;
+let M = class extends N {
+  constructor() {
+    super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
+  }
+  createRenderRoot() {
+    const e = super.createRenderRoot();
+    return this.renderOptions.renderBefore ??= e.firstChild, e;
+  }
+  update(e) {
+    const t = this.render();
+    this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = wt(t, this.renderRoot, this.renderOptions);
+  }
+  connectedCallback() {
+    super.connectedCallback(), this._$Do?.setConnected(!0);
+  }
+  disconnectedCallback() {
+    super.disconnectedCallback(), this._$Do?.setConnected(!1);
+  }
+  render() {
+    return T;
+  }
+};
+M._$litElement$ = !0, M.finalized = !0, $e.litElementHydrateSupport?.({ LitElement: M });
+const Ct = $e.litElementPolyfillSupport;
+Ct?.({ LitElement: M });
+($e.litElementVersions ??= []).push("4.2.1");
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const Je = (s) => (e, t) => {
+  t !== void 0 ? t.addInitializer((() => {
+    customElements.define(s, e);
+  })) : customElements.define(s, e);
+};
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const St = { attribute: !0, type: String, converter: J, reflect: !1, hasChanged: _e }, Et = (s = St, e, t) => {
+  const { kind: i, metadata: r } = t;
+  let n = globalThis.litPropertyMetadata.get(r);
+  if (n === void 0 && globalThis.litPropertyMetadata.set(r, n = /* @__PURE__ */ new Map()), i === "setter" && ((s = Object.create(s)).wrapped = !0), n.set(t.name, s), i === "accessor") {
+    const { name: o } = t;
+    return { set(d) {
+      const a = e.get.call(this);
+      e.set.call(this, d), this.requestUpdate(o, a, s);
+    }, init(d) {
+      return d !== void 0 && this.C(o, void 0, s, d), d;
+    } };
+  }
+  if (i === "setter") {
+    const { name: o } = t;
+    return function(d) {
+      const a = this[o];
+      e.call(this, d), this.requestUpdate(o, a, s);
+    };
+  }
+  throw Error("Unsupported decorator location: " + i);
+};
+function ie(s) {
+  return (e, t) => typeof t == "object" ? Et(s, e, t) : ((i, r, n) => {
+    const o = r.hasOwnProperty(n);
+    return r.constructor.createProperty(n, i), o ? Object.getOwnPropertyDescriptor(r, n) : void 0;
+  })(s, e, t);
+}
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+function ye(s) {
+  return ie({ ...s, state: !0, attribute: !1 });
+}
+const Xe = [
+  { name: "entity", required: !0, selector: { entity: {} } },
+  { name: "name", selector: { text: {}, placeholder: "Custom name" } },
+  { name: "image", selector: { text: { placeholder: "URL to an image" } } },
+  { name: "icon", selector: { icon: {} } },
+  { name: "show_name", selector: { boolean: {} } },
+  { name: "show_state", selector: { boolean: {} } },
+  { name: "show_devices", selector: { boolean: {} } },
+  {
+    name: "badge_style",
+    selector: {
+      select: {
+        options: [
+          { value: "icon_text", label: "Icon + Text" },
+          { value: "icon_only", label: "Nur Icon" },
+          { value: "text_only", label: "Nur Text" }
+        ]
+      }
+    }
+  },
+  {
+    name: "device_attributes",
+    selector: {
+      select: {
+        multiple: !0,
+        options: [
+          "battery",
+          "battery_level",
+          "gps_accuracy",
+          "source_type",
+          "last_update_trigger",
+          "latitude",
+          "longitude",
+          "altitude",
+          "speed",
+          "direction"
+        ],
+        placeholder: "e.g. device_tracker, bluetooth"
+      }
+    }
+  },
+  { name: "excluded_entities", selector: { entity: { multiple: !0 } } }
+], Pt = "langChanged";
+function kt(s, e, t) {
+  return Object.entries(Oe(e || {})).reduce((i, [r, n]) => i.replace(new RegExp(`{{[  ]*${r}[  ]*}}`, "gm"), String(Oe(n))), s);
+}
+function Ht(s, e) {
+  const t = s.split(".");
+  let i = e.strings;
+  for (; i != null && t.length > 0; )
+    i = i[t.shift()];
+  return i != null ? i.toString() : null;
+}
+function Oe(s) {
+  return typeof s == "function" ? s() : s;
+}
+const Nt = () => ({
+  loader: () => Promise.resolve({}),
+  empty: (s) => `[${s}]`,
+  lookup: Ht,
+  interpolate: kt,
+  translationCache: {}
+});
+let Qe = Nt();
+function Mt(s) {
+  window.dispatchEvent(new CustomEvent(Pt, { detail: s }));
+}
+function Tt(s, e, t = Qe) {
+  Mt({
+    previousStrings: t.strings,
+    previousLang: t.lang,
+    lang: t.lang = s,
+    strings: t.strings = e
+  });
+}
+async function Ut(s, e = Qe) {
+  const t = await e.loader(s, e);
+  e.translationCache = {}, Tt(s, t, e);
+}
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+var le;
+const Q = window, O = Q.trustedTypes, De = O ? O.createPolicy("lit-html", { createHTML: (s) => s }) : void 0, ue = "$lit$", y = `lit$${(Math.random() + "").slice(9)}$`, et = "?" + y, Ot = `<${et}>`, E = document, ee = () => E.createComment(""), F = (s) => s === null || typeof s != "object" && typeof s != "function", tt = Array.isArray, Dt = (s) => tt(s) || typeof s?.[Symbol.iterator] == "function", de = `[ 	
+\f\r]`, R = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, Ie = /-->/g, Le = />/g, A = RegExp(`>|${de}(?:([^\\s"'>=/]+)(${de}*=${de}*(?:[^ 	
+\f\r"'\`<>=]|("|')|))|$)`, "g"), ze = /'/g, je = /"/g, st = /^(?:script|style|textarea|title)$/i, q = Symbol.for("lit-noChange"), g = Symbol.for("lit-nothing"), Re = /* @__PURE__ */ new WeakMap(), C = E.createTreeWalker(E, 129, null, !1);
+function it(s, e) {
+  if (!Array.isArray(s) || !s.hasOwnProperty("raw")) throw Error("invalid template strings array");
+  return De !== void 0 ? De.createHTML(e) : e;
+}
+const It = (s, e) => {
+  const t = s.length - 1, i = [];
+  let r, n = e === 2 ? "<svg>" : "", o = R;
+  for (let d = 0; d < t; d++) {
+    const a = s[d];
+    let c, h, l = -1, u = 0;
+    for (; u < a.length && (o.lastIndex = u, h = o.exec(a), h !== null); ) u = o.lastIndex, o === R ? h[1] === "!--" ? o = Ie : h[1] !== void 0 ? o = Le : h[2] !== void 0 ? (st.test(h[2]) && (r = RegExp("</" + h[2], "g")), o = A) : h[3] !== void 0 && (o = A) : o === A ? h[0] === ">" ? (o = r ?? R, l = -1) : h[1] === void 0 ? l = -2 : (l = o.lastIndex - h[2].length, c = h[1], o = h[3] === void 0 ? A : h[3] === '"' ? je : ze) : o === je || o === ze ? o = A : o === Ie || o === Le ? o = R : (o = A, r = void 0);
+    const p = o === A && s[d + 1].startsWith("/>") ? " " : "";
+    n += o === R ? a + Ot : l >= 0 ? (i.push(c), a.slice(0, l) + ue + a.slice(l) + y + p) : a + y + (l === -2 ? (i.push(void 0), d) : p);
+  }
+  return [it(s, n + (s[t] || "<?>") + (e === 2 ? "</svg>" : "")), i];
+};
+class Z {
+  constructor({ strings: e, _$litType$: t }, i) {
+    let r;
+    this.parts = [];
+    let n = 0, o = 0;
+    const d = e.length - 1, a = this.parts, [c, h] = It(e, t);
+    if (this.el = Z.createElement(c, i), C.currentNode = this.el.content, t === 2) {
+      const l = this.el.content, u = l.firstChild;
+      u.remove(), l.append(...u.childNodes);
+    }
+    for (; (r = C.nextNode()) !== null && a.length < d; ) {
+      if (r.nodeType === 1) {
+        if (r.hasAttributes()) {
+          const l = [];
+          for (const u of r.getAttributeNames()) if (u.endsWith(ue) || u.startsWith(y)) {
+            const p = h[o++];
+            if (l.push(u), p !== void 0) {
+              const b = r.getAttribute(p.toLowerCase() + ue).split(y), L = /([.?@])?(.*)/.exec(p);
+              a.push({ type: 1, index: n, name: L[2], strings: b, ctor: L[1] === "." ? zt : L[1] === "?" ? Rt : L[1] === "@" ? Bt : ne });
+            } else a.push({ type: 6, index: n });
+          }
+          for (const u of l) r.removeAttribute(u);
+        }
+        if (st.test(r.tagName)) {
+          const l = r.textContent.split(y), u = l.length - 1;
+          if (u > 0) {
+            r.textContent = O ? O.emptyScript : "";
+            for (let p = 0; p < u; p++) r.append(l[p], ee()), C.nextNode(), a.push({ type: 2, index: ++n });
+            r.append(l[u], ee());
+          }
+        }
+      } else if (r.nodeType === 8) if (r.data === et) a.push({ type: 2, index: n });
+      else {
+        let l = -1;
+        for (; (l = r.data.indexOf(y, l + 1)) !== -1; ) a.push({ type: 7, index: n }), l += y.length - 1;
+      }
+      n++;
+    }
+  }
+  static createElement(e, t) {
+    const i = E.createElement("template");
+    return i.innerHTML = e, i;
+  }
+}
+function D(s, e, t = s, i) {
+  var r, n, o, d;
+  if (e === q) return e;
+  let a = i !== void 0 ? (r = t._$Co) === null || r === void 0 ? void 0 : r[i] : t._$Cl;
+  const c = F(e) ? void 0 : e._$litDirective$;
+  return a?.constructor !== c && ((n = a?._$AO) === null || n === void 0 || n.call(a, !1), c === void 0 ? a = void 0 : (a = new c(s), a._$AT(s, t, i)), i !== void 0 ? ((o = (d = t)._$Co) !== null && o !== void 0 ? o : d._$Co = [])[i] = a : t._$Cl = a), a !== void 0 && (e = D(s, a._$AS(s, e.values), a, i)), e;
+}
+class Lt {
+  constructor(e, t) {
+    this._$AV = [], this._$AN = void 0, this._$AD = e, this._$AM = t;
+  }
+  get parentNode() {
+    return this._$AM.parentNode;
+  }
+  get _$AU() {
+    return this._$AM._$AU;
+  }
+  u(e) {
+    var t;
+    const { el: { content: i }, parts: r } = this._$AD, n = ((t = e?.creationScope) !== null && t !== void 0 ? t : E).importNode(i, !0);
+    C.currentNode = n;
+    let o = C.nextNode(), d = 0, a = 0, c = r[0];
+    for (; c !== void 0; ) {
+      if (d === c.index) {
+        let h;
+        c.type === 2 ? h = new re(o, o.nextSibling, this, e) : c.type === 1 ? h = new c.ctor(o, c.name, c.strings, this, e) : c.type === 6 && (h = new Vt(o, this, e)), this._$AV.push(h), c = r[++a];
+      }
+      d !== c?.index && (o = C.nextNode(), d++);
+    }
+    return C.currentNode = E, n;
+  }
+  v(e) {
+    let t = 0;
+    for (const i of this._$AV) i !== void 0 && (i.strings !== void 0 ? (i._$AI(e, i, t), t += i.strings.length - 2) : i._$AI(e[t])), t++;
+  }
+}
+class re {
+  constructor(e, t, i, r) {
+    var n;
+    this.type = 2, this._$AH = g, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = i, this.options = r, this._$Cp = (n = r?.isConnected) === null || n === void 0 || n;
+  }
+  get _$AU() {
+    var e, t;
+    return (t = (e = this._$AM) === null || e === void 0 ? void 0 : e._$AU) !== null && t !== void 0 ? t : this._$Cp;
+  }
+  get parentNode() {
+    let e = this._$AA.parentNode;
+    const t = this._$AM;
+    return t !== void 0 && e?.nodeType === 11 && (e = t.parentNode), e;
+  }
+  get startNode() {
+    return this._$AA;
+  }
+  get endNode() {
+    return this._$AB;
+  }
+  _$AI(e, t = this) {
+    e = D(this, e, t), F(e) ? e === g || e == null || e === "" ? (this._$AH !== g && this._$AR(), this._$AH = g) : e !== this._$AH && e !== q && this._(e) : e._$litType$ !== void 0 ? this.g(e) : e.nodeType !== void 0 ? this.$(e) : Dt(e) ? this.T(e) : this._(e);
+  }
+  k(e) {
+    return this._$AA.parentNode.insertBefore(e, this._$AB);
+  }
+  $(e) {
+    this._$AH !== e && (this._$AR(), this._$AH = this.k(e));
+  }
+  _(e) {
+    this._$AH !== g && F(this._$AH) ? this._$AA.nextSibling.data = e : this.$(E.createTextNode(e)), this._$AH = e;
+  }
+  g(e) {
+    var t;
+    const { values: i, _$litType$: r } = e, n = typeof r == "number" ? this._$AC(e) : (r.el === void 0 && (r.el = Z.createElement(it(r.h, r.h[0]), this.options)), r);
+    if (((t = this._$AH) === null || t === void 0 ? void 0 : t._$AD) === n) this._$AH.v(i);
+    else {
+      const o = new Lt(n, this), d = o.u(this.options);
+      o.v(i), this.$(d), this._$AH = o;
+    }
+  }
+  _$AC(e) {
+    let t = Re.get(e.strings);
+    return t === void 0 && Re.set(e.strings, t = new Z(e)), t;
+  }
+  T(e) {
+    tt(this._$AH) || (this._$AH = [], this._$AR());
+    const t = this._$AH;
+    let i, r = 0;
+    for (const n of e) r === t.length ? t.push(i = new re(this.k(ee()), this.k(ee()), this, this.options)) : i = t[r], i._$AI(n), r++;
+    r < t.length && (this._$AR(i && i._$AB.nextSibling, r), t.length = r);
+  }
+  _$AR(e = this._$AA.nextSibling, t) {
+    var i;
+    for ((i = this._$AP) === null || i === void 0 || i.call(this, !1, !0, t); e && e !== this._$AB; ) {
+      const r = e.nextSibling;
+      e.remove(), e = r;
+    }
+  }
+  setConnected(e) {
+    var t;
+    this._$AM === void 0 && (this._$Cp = e, (t = this._$AP) === null || t === void 0 || t.call(this, e));
+  }
+}
+class ne {
+  constructor(e, t, i, r, n) {
+    this.type = 1, this._$AH = g, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = n, i.length > 2 || i[0] !== "" || i[1] !== "" ? (this._$AH = Array(i.length - 1).fill(new String()), this.strings = i) : this._$AH = g;
+  }
+  get tagName() {
+    return this.element.tagName;
+  }
+  get _$AU() {
+    return this._$AM._$AU;
+  }
+  _$AI(e, t = this, i, r) {
+    const n = this.strings;
+    let o = !1;
+    if (n === void 0) e = D(this, e, t, 0), o = !F(e) || e !== this._$AH && e !== q, o && (this._$AH = e);
+    else {
+      const d = e;
+      let a, c;
+      for (e = n[0], a = 0; a < n.length - 1; a++) c = D(this, d[i + a], t, a), c === q && (c = this._$AH[a]), o || (o = !F(c) || c !== this._$AH[a]), c === g ? e = g : e !== g && (e += (c ?? "") + n[a + 1]), this._$AH[a] = c;
+    }
+    o && !r && this.j(e);
+  }
+  j(e) {
+    e === g ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
+  }
+}
+class zt extends ne {
+  constructor() {
+    super(...arguments), this.type = 3;
+  }
+  j(e) {
+    this.element[this.name] = e === g ? void 0 : e;
+  }
+}
+const jt = O ? O.emptyScript : "";
+class Rt extends ne {
+  constructor() {
+    super(...arguments), this.type = 4;
+  }
+  j(e) {
+    e && e !== g ? this.element.setAttribute(this.name, jt) : this.element.removeAttribute(this.name);
+  }
+}
+class Bt extends ne {
+  constructor(e, t, i, r, n) {
+    super(e, t, i, r, n), this.type = 5;
+  }
+  _$AI(e, t = this) {
+    var i;
+    if ((e = (i = D(this, e, t, 0)) !== null && i !== void 0 ? i : g) === q) return;
+    const r = this._$AH, n = e === g && r !== g || e.capture !== r.capture || e.once !== r.once || e.passive !== r.passive, o = e !== g && (r === g || n);
+    n && this.element.removeEventListener(this.name, this, r), o && this.element.addEventListener(this.name, this, e), this._$AH = e;
+  }
+  handleEvent(e) {
+    var t, i;
+    typeof this._$AH == "function" ? this._$AH.call((i = (t = this.options) === null || t === void 0 ? void 0 : t.host) !== null && i !== void 0 ? i : this.element, e) : this._$AH.handleEvent(e);
+  }
+}
+class Vt {
+  constructor(e, t, i) {
+    this.element = e, this.type = 6, this._$AN = void 0, this._$AM = t, this.options = i;
+  }
+  get _$AU() {
+    return this._$AM._$AU;
+  }
+  _$AI(e) {
+    D(this, e);
+  }
+}
+const Be = Q.litHtmlPolyfillSupport;
+Be?.(Z, re), ((le = Q.litHtmlVersions) !== null && le !== void 0 ? le : Q.litHtmlVersions = []).push("2.8.0");
+var Wt = Object.defineProperty, Ft = Object.getOwnPropertyDescriptor, oe = (s, e, t, i) => {
+  for (var r = i > 1 ? void 0 : i ? Ft(e, t) : e, n = s.length - 1, o; n >= 0; n--)
+    (o = s[n]) && (r = (i ? o(e, t, r) : o(r)) || r);
+  return i && r && Wt(e, t, r), r;
+};
+let I = class extends M {
+  constructor() {
+    super(), this._computeLabel = (s) => ({
+      entity: "Person Entity",
+      name: "Custom Name",
+      image: "Image URL",
+      icon: "Icon",
+      show_name: "Show Name",
+      show_state: "Show State",
+      show_devices: "Show Devices",
+      badge_style: "Badge Style",
+      device_attributes: "Device Attributes",
+      excluded_entities: "Excluded Entities"
+    })[s.name] || s.name, console.log("🎨 EnhancedPersonCardEditor constructor called");
+  }
+  static get styles() {
+    return We`
+      .card-config {
+        padding: 16px;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--card-divider-color);
+      }
+
+      .header-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--primary-text-color, #dc143c);
+      }
+
+      .header-subtitle {
+        font-size: 14px;
+        color: var(--secondary-text-color);
+        margin-top: 4px;
+      }
+
+      ha-form {
+        display: block;
+        margin-bottom: 24px;
+      }
+
+      .preview {
+        background: var(--card-background-color);
+        border: 1px solid var(--divider-color);
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 24px;
+      }
+
+      .preview-title {
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: var(--primary-text-color);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .preview-config {
+        font-family: "SFMono-Regular", "Monaco", "Consolas", monospace;
+        font-size: 13px;
+        color: var(--secondary-text-color);
+        background: var(--code-editor-background-color, #f8f8f8);
+        padding: 16px;
+        border-radius: 8px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        line-height: 1.4;
+        border: 1px solid var(--divider-color);
+      }
+
+      @media (max-width: 768px) {
+        .card-config {
+          padding: 12px;
+        }
+      }
+    `;
+  }
+  connectedCallback() {
+    super.connectedCallback(), console.log("🎨 EnhancedPersonCardEditor connected to DOM"), console.log("🎨 HASS available:", !!this.hass);
+  }
+  setConfig(s) {
+    const t = {
+      ...{
+        type: "custom:enhanced-person-card",
+        entity: "",
+        show_name: !0,
+        show_state: !0,
+        show_devices: !0,
+        badge_style: "icon_text"
+      },
+      ...s
+    };
+    Object.keys(t).forEach((i) => {
+      s[i] !== void 0 && (t[i] = s[i]);
+    }), this._config = t;
+  }
+  render() {
+    if (Ut(
+      (this.hass.selectedLanguage || this.hass.language || "en").substring(
+        0,
+        2
+      )
+    ), !this.hass)
+      return f`
+        <div class="card-config">
+          <div class="warning">⚠️ Waiting for Home Assistant connection...</div>
+        </div>
+      `;
+    if (!this._config)
+      return f`
+        <div class="card-config">
+          <div class="warning">⚠️ Loading configuration...</div>
+        </div>
+      `;
+    const s = {
+      entity: this._config.entity || "",
+      name: this._config.name || "",
+      image: this._config.image || "",
+      icon: this._config.icon || "",
+      show_name: this._config.show_name ?? !0,
+      show_state: this._config.show_state ?? !0,
+      show_devices: this._config.show_devices ?? !0,
+      badge_style: this._config.badge_style || "icon_text",
+      device_attributes: this._config.device_attributes || [],
+      excluded_entities: this._config.excluded_entities || []
+    };
+    return f`
+      <div class="card-config">
+        <!-- Header -->
+        <div class="section">
+          <div class="section-header">
+            🌦️ Enhanced Person Card Configuration
           </div>
-          ${d?`<div class="person-devices-section">
-            <div class="devices-header">Devices</div>
-            <div class="devices-list">
-              ${l.length>0?l.map(_=>this._renderDevice(_)).join(""):'<div class="no-devices">No devices found</div>'}
-            </div>
-          </div>`:""}
+          <div class="section-description">
+            Configure your Enhanced Person with the options below. All changes
+            are saved automatically.
+          </div>
         </div>
+
+        <!-- HA Form -->
+        <ha-form
+          .hass=${this.hass}
+          .data=${s}
+          .schema=${Xe}
+          .computeLabel=${this._computeLabel}
+          @value-changed=${this._valueChanged}
+        ></ha-form>
+
+        <!-- Configuration Preview -->
+        ${this._config.entity ? f`
+              <div class="preview">
+                <div class="preview-title">📋 YAML Configuration</div>
+                <div class="preview-config">${this._renderConfigPreview()}</div>
+              </div>
+            ` : f`
+              <div class="warning">
+                ⚠️ Please select a device to complete the configuration.
+              </div>
+            `}
       </div>
-    `}_renderIcon(e,t,r){return e?`<img src="${e}" alt="${r}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-        <div class="fallback-icon" style="display: none;">${t?this._renderMDI(t):this._renderMDI("mdi:account")}</div>`:t?`<div class="fallback-icon">${this._renderMDI(t)}</div>`:`<div class="fallback-icon">${this._renderMDI("mdi:account")}</div>`}_renderMDI(e){return e.startsWith("mdi:")?`<ha-icon icon="${e}"></ha-icon>`:e}_getStateText(e){var a;let t=((a=this._config)==null?void 0:a.badge_style)||"icon_text",r=this._getStateIcon(e),s=this._getLocationDisplayName(e);switch(t){case"icon_only":return this._renderMDI(r);case"text_only":return s;case"icon_text":default:return`${this._renderMDI(r)} ${s}`}}_getStateIcon(e){switch(e){case"home":return"mdi:home";case"not_home":return"mdi:home-export-outline";case"unknown":return"mdi:help-circle-outline";default:return"mdi:map-marker"}}_getLocationDisplayName(e){if(!e||e==="unknown")return"Unknown";switch(e){case"home":return"Home";case"not_home":return"Away";case"unknown":return"Unknown"}let t=e.replace(/_/g," ");return t=t.split(" ").map(r=>r.charAt(0).toUpperCase()+r.slice(1).toLowerCase()).join(" "),t}_getStateClass(e){switch(e){case"home":return"state-home";case"not_home":return"state-away";default:return"state-unknown"}}_renderDevice(e){let t=e.attributes.friendly_name||e.entity_id,r=this._getDeviceIcon(e),s=this._config.device_attributes||["battery_level","gps_accuracy","source_type"],a=[];return s.forEach(i=>{if(i==="zone"){let n=e.state,c=this._formatDeviceState(n),d=this._getAttributeIcon("zone",n),o=this._getAttributeLabel("zone");a.push({name:i,label:o,value:n,displayValue:c,icon:d,entityName:t})}else{let n=this._getAttributeEntriesForDevice(e,i);a.push(...n)}}),`
-      <div class="device-item" data-entity="${e.entity_id}">
-        <div class="device-icon">
-          ${this._renderMDI(r)}
-        </div>
-        <div class="device-info">
-          <div class="device-name">${t}</div>
-          ${a.length>0?`
-            <div class="device-attributes">
-              ${a.map(i=>{let n=String(i.entityName||i.label);return`
-                <span class="device-attribute" data-attribute="${i.name}" title="${i.label}: ${i.displayValue} (${i.entityName||t})">
-                  <span class="attribute-icon" style="color: ${i.icon.color}">
-                    ${this._renderMDI(i.icon.icon)}
-                  </span>
-                  <span class="attribute-name${!1?" scrolling":""}">${n}:</span>
-                  <span class="attribute-value">${i.displayValue}</span>
-                </span>
-              `}).join("")}
-            </div>
-          `:""}
-        </div>
-      </div>
-    `}_getAttributeEntriesForDevice(e,t){let r=[],s=new Set;if(!this._hass||!this._hass.states)return r;let a=e.attributes.device_id,i=e.entity_id,n=e.attributes.friendly_name||e.entity_id.replace("device_tracker.",""),d={battery_level:["battery_level","battery"],signal_strength:["signal_strength","wifi_signal","signal"],gps_accuracy:["gps_accuracy","accuracy"]}[t]||[t];return Object.values(this._hass.states).forEach(o=>{if(!o.entity_id.startsWith("sensor."))return;let u=o.attributes.friendly_name||o.entity_id;if(s.has(u))return;let l=!1;if(a&&o.attributes.device_id===a&&(l=!0),!l){let h=o.entity_id.toLowerCase(),b=(o.attributes.friendly_name||"").toLowerCase(),y=i.replace("device_tracker.","").toLowerCase(),v=(n||"").toLowerCase(),S=Object.values(this._hass.states).filter(p=>p.entity_id.startsWith("device_tracker.")).map(p=>({entity_id:p.entity_id.replace("device_tracker.","").toLowerCase(),friendly_name:(p.attributes.friendly_name||"").toLowerCase(),full_entity:p.entity_id})),C=h===`sensor.${y}`||h.startsWith(`sensor.${y}_`),L=!1;if(C){for(let p of S)if(p.entity_id!==y&&p.entity_id.includes(y)&&(h.includes(p.entity_id)||b.includes(p.friendly_name))){L=!0;break}}if(C&&!L)l=!0;else if(!l&&v&&v.length>3){let p=b.includes(v)||h.includes(v.replace(/\s+/g,"_")),z=!1;if(p){for(let x of S)if(x.friendly_name!==v&&x.friendly_name.length>v.length&&(b.includes(x.friendly_name)||h.includes(x.friendly_name.replace(/\s+/g,"_")))){z=!0;break}}p&&!z&&(l=!0)}}if(!l)return;let _=o.entity_id.toLowerCase(),g=(o.attributes.friendly_name||"").toLowerCase();if(!d.some(h=>_.includes(h)||g.includes(h))||this._usedSensors.has(o.entity_id)||["battery_state","charging_state","power_state"].some(h=>_.includes(h)||g.includes(h)))return;let f=o.state;if(f&&f!=="unknown"&&f!=="unavailable"){let h=this._getAttributeDisplayValue(t,f),b=this._getAttributeIcon(t,f),y=this._getAttributeLabel(t);r.push({name:t,label:y,value:f,displayValue:h,icon:b,entityName:u}),s.add(u),this._usedSensors.add(o.entity_id)}}),r}_formatDeviceState(e){if(!e||e==="unknown")return"Unknown";switch(e){case"home":return"Home";case"not_home":return"Away";case"unknown":return"Unknown"}let t=e.replace(/_/g," ");return t=t.split(" ").map(r=>r.charAt(0).toUpperCase()+r.slice(1).toLowerCase()).join(" "),t}_getDeviceIcon(e){return e.entity_id.startsWith("device_tracker.")?e.attributes.source_type==="gps"?"mdi:cellphone":e.attributes.source_type==="bluetooth"?"mdi:bluetooth":e.attributes.source_type==="router"?"mdi:router-wireless":"mdi:crosshairs-gps":"mdi:devices"}_getStyles(){var r,s,a,i,n;return`
-      <style>
+    `;
+  }
+  _renderConfigPreview() {
+    const s = {
+      type: "custom:enhanced-person-card",
+      ...this._config
+    };
+    return Object.keys(s).forEach((e) => {
+      (s[e] === void 0 || s[e] === "") && delete s[e];
+    }), Object.entries(s).map(([e, t]) => typeof t == "string" ? `${e}: "${t}"` : `${e}: ${t}`).join(`
+`);
+  }
+  _valueChanged(s) {
+    if (!this._config || !this.hass)
+      return;
+    const e = {
+      type: "custom:enhanced-person-card",
+      ...s.detail.value
+    };
+    Object.keys(e).forEach((i) => {
+      (e[i] === "" || e[i] === void 0) && delete e[i];
+    }), this._config = e;
+    const t = new CustomEvent("config-changed", {
+      detail: { config: this._config },
+      bubbles: !0,
+      composed: !0
+    });
+    this.dispatchEvent(t);
+  }
+  static get properties() {
+    return {
+      hass: {},
+      _config: {}
+    };
+  }
+};
+oe([
+  ie({ attribute: !1 })
+], I.prototype, "hass", 2);
+oe([
+  ie({ attribute: !1 })
+], I.prototype, "lovelace", 2);
+oe([
+  ye()
+], I.prototype, "_config", 2);
+I = oe([
+  Je("enhanced-person-card-editor")
+], I);
+var qt = Object.defineProperty, Zt = Object.getOwnPropertyDescriptor, ae = (s, e, t, i) => {
+  for (var r = i > 1 ? void 0 : i ? Zt(e, t) : e, n = s.length - 1, o; n >= 0; n--)
+    (o = s[n]) && (r = (i ? o(e, t, r) : o(r)) || r);
+  return i && r && qt(e, t, r), r;
+};
+console.log("🎯 About to apply @customElement decorator to EnhancedPersonCard");
+console.log("🎯 customElements registry available:", !!customElements);
+let K = class extends M {
+  constructor() {
+    super(), this._usedSensors = /* @__PURE__ */ new Set();
+  }
+  connectedCallback() {
+    super.connectedCallback();
+  }
+  static get styles() {
+    return We`
         :host {
-            --row-gap: var(--ha-section-grid-row-gap, 8px);
-            --column-gap: var(--ha-section-grid-column-gap, 8px);
-            --row-height: var(--ha-section-grid-row-height, 56px);
             display: block;
+            background: var(
+            --ha-card-background,
+            var(--card-background-color, #fff)
+            );
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            box-shadow: var(
+            --ha-card-box-shadow,
+            0 4px 20px var(--box-shadow-color, rgba(0, 0, 0, 0.1))
+            );
+            font-family: var(
+            --primary-font-family,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Roboto,
+            sans-serif
+            );
+            color: var(--primary-text-color, #fff);
         }
-
         .person-card {
-          background: var(--ha-card-background, var(--card-background-color));
-          border-radius: var(--ha-card-border-radius);
-          border: var(--ha-card-border-width, 1px) solid var(--ha-card-border-color, var(--divider-color));
-          box-shadow: var(--ha-card-box-shadow);
-          padding: var(--ha-card-padding, 15px);
-          display: flex;
-          flex-direction: column;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          min-height: ${(((s=(r=this._config)==null?void 0:r.grid_options)==null?void 0:s.rows)||((i=(a=this._config)==null?void 0:a.layout_options)==null?void 0:i.grid_rows)||((n=this._config)==null?void 0:n.grid_rows)||this.getCardSize())>1?"100%":"var(--card-min-height, 120px)"};
-	      height: calc((var(--row-size,1) * (var(--row-height) + var(--row-gap))) - var(--row-gap));
-          box-sizing: border-box;
-          font-family: var(--paper-font-body1_-_font-family);
-          width: 100%;
+            padding: 16px;
         }
-
         .person-card:hover {
           box-shadow: var(--ha-card-box-shadow-hover, var(--ha-card-box-shadow));
         }
@@ -127,7 +1177,7 @@
         }
 
         .person-left-section {
-          flex: 0 0 var(--person-left-width, 30%);
+          flex: 0 0 var(--person-left-width, 40%);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -440,14 +1490,440 @@
             flex-direction: column;
             overflow: hidden;
           }
-      </style>
-    `}_attachEventListeners(){var t,r,s;let e=(t=this.shadowRoot)==null?void 0:t.querySelector(".person-card");if(e&&!e.classList.contains("loading")&&!e.classList.contains("error")){e.addEventListener("click",()=>this._handleClick());let a=(r=this.shadowRoot)==null?void 0:r.querySelectorAll(".device-item");a==null||a.forEach(n=>{n.addEventListener("click",c=>{c.stopPropagation();let d=n.getAttribute("data-entity");d&&this._handleDeviceClick(d)})});let i=(s=this.shadowRoot)==null?void 0:s.querySelectorAll(".device-attribute");i==null||i.forEach(n=>{n.addEventListener("click",c=>{c.stopPropagation();let d=n.closest(".device-item"),o=d==null?void 0:d.getAttribute("data-entity"),u=n.getAttribute("data-attribute");if(o){if(u==="battery_level"){let l=o.replace("device_tracker.",""),_=Object.keys(this._hass.states).find(g=>g.includes("battery")&&g.includes(l));if(_){this._handleDeviceClick(_);return}}this._handleDeviceClick(o)}})})}}_handleClick(){var t;if(!((t=this._config)!=null&&t.entity))return;let e=new CustomEvent("hass-more-info",{bubbles:!0,composed:!0,detail:{entityId:this._config.entity}});this.dispatchEvent(e)}_handleDeviceClick(e){let t=new CustomEvent("hass-more-info",{bubbles:!0,composed:!0,detail:{entityId:e}});this.dispatchEvent(t)}static getConfigElement(){return document.createElement("enhanced-person-card-editor")}static getStubConfig(){return{type:"custom:enhanced-person-card",entity:"",show_name:!0,show_state:!0,show_devices:!0,badge_style:"icon_text",device_attributes:["battery_level","gps_accuracy","source_type","zone"],excluded_entities:[],grid_options:{rows:1,columns:1}}}static getConfigSchema(){return k.getConfigSchema()}static getCardColumns(e){var t,r;return((t=e==null?void 0:e.grid_options)==null?void 0:t.columns)!==void 0?e.grid_options.columns:((r=e==null?void 0:e.layout_options)==null?void 0:r.grid_columns)!==void 0?e.layout_options.grid_columns:e&&"grid_columns"in e&&e.grid_columns!==void 0?e.grid_columns:1}connectedCallback(){}disconnectedCallback(){}};try{customElements.get("enhanced-person-card")||customElements.define("enhanced-person-card",w)}catch(m){console.warn("Error registering enhanced-person-card:",m)}var I=w;typeof window!="undefined"&&(window.customCards=window.customCards||[],window.customCards.some(m=>m.type==="enhanced-person-card")||window.customCards.push({type:"enhanced-person-card",name:"Enhanced Person Card",description:"Advanced person card with device tracking, sensor integration, and grid layout support",preview:!1,documentationURL:"https://github.com/your-username/ha-enhanced-person-card"}));var k=class extends HTMLElement{constructor(){super();this._hass=null;this._config={};this._rendered=!1;this._computeLabel=e=>({entity:"Entit\xE4t",name:"Name (optional)",image:"Bild URL (optional)",icon:"Icon (optional)",show_name:"Namen anzeigen",show_state:"Status anzeigen",show_devices:"Ger\xE4te anzeigen",badge_style:"Badge-Stil",device_attributes:"Ger\xE4te-Attribute",excluded_entities:"Ausgeschlossene Entit\xE4ten (optional)",theme:"Theme (optional)"})[e.name]||e.name;this._valueChanged=e=>{if(!e.detail.value)return;this._config={type:"custom:enhanced-person-card",...e.detail.value};let t=new CustomEvent("config-changed",{detail:{config:this._config},bubbles:!0,composed:!0});this.dispatchEvent(t)};this.attachShadow({mode:"open"})}connectedCallback(){this._rendered||this._render()}set hass(e){this._hass=e,this._rendered?this._updateHaForm():this._render()}setConfig(e){var t;if(this._config={...e},!this._rendered)this._render();else{let r=(t=this.shadowRoot)==null?void 0:t.querySelector("ha-form");r&&(r.data=this._config)}}_updateHaForm(){if(!this.shadowRoot||!this._hass)return;let e=this.shadowRoot.querySelector("ha-form");if(e&&(e.hass=this._hass,e.schema=this._getSchema(),typeof e.requestUpdate=="function"))try{e.requestUpdate()}catch{}}_render(){if(!this.shadowRoot||this._rendered)return;let e=this._getSchema();this.shadowRoot.innerHTML=`
-            <style>
-                ha-form {
-                    display: block;
-                    width: 100%;
-                }
-            </style>
-            
-            <ha-form></ha-form>
-        `;let t=this.shadowRoot.querySelector("ha-form");t&&(t.addEventListener("value-changed",this._valueChanged),t.hass=this._hass,t.data=this._config,t.schema=e,t.computeLabel=this._computeLabel),this._rendered=!0}_getSchema(){return[{name:"entity",required:!0,selector:{entity:{filter:[{domain:"person"},{domain:"device_tracker"},{domain:"input_select"}]}}},{name:"name",selector:{text:{}}},{name:"image",selector:{text:{type:"url"}}},{name:"icon",selector:{icon:{}}},{name:"show_name",default:!0,selector:{boolean:{}}},{name:"show_state",default:!0,selector:{boolean:{}}},{name:"show_devices",default:!0,selector:{boolean:{}}},{name:"badge_style",default:"icon_text",selector:{select:{options:[{value:"icon_text",label:"Icon + Text"},{value:"icon_only",label:"Nur Icon"},{value:"text_only",label:"Nur Text"}]}}},{name:"device_attributes",default:["battery_level","gps_accuracy","source_type","zone"],selector:{select:{multiple:!0,options:[{value:"battery_level",label:"Akku-Level"},{value:"gps_accuracy",label:"GPS Genauigkeit"},{value:"source_type",label:"Ger\xE4tetyp"},{value:"zone",label:"Zone"},{value:"last_seen",label:"Zuletzt gesehen"},{value:"ip",label:"IP-Adresse"},{value:"hostname",label:"Hostname"},{value:"mac",label:"MAC-Adresse"},{value:"latitude",label:"Breitengrad"},{value:"longitude",label:"L\xE4ngengrad"}]}}},{name:"excluded_entities",required:!1,selector:{entity:{domain:"device_tracker",multiple:!0}}},{name:"theme",selector:{select:{options:this._getThemeOptions()}}}]}_getThemeOptions(){if(!this._hass||!this._hass.themes||!this._hass.themes.themes)return[{value:"",label:"Standard"}];let e=Object.keys(this._hass.themes.themes),t=[{value:"",label:"Standard"}];return e.forEach(r=>{t.push({value:r,label:r})}),t}static getConfigSchema(){return[{name:"entity",required:!0,selector:{entity:{domain:"person"}}},{name:"name",required:!1,selector:{text:{}}},{name:"image",required:!1,selector:{text:{}}},{name:"icon",required:!1,selector:{icon:{}}},{name:"show_name",required:!1,default:!0,selector:{boolean:{}}},{name:"show_state",required:!1,default:!0,selector:{boolean:{}}},{name:"show_devices",required:!1,default:!0,selector:{boolean:{}}},{name:"badge_style",required:!1,default:"icon_text",selector:{select:{options:[{value:"icon_text",label:"Icon + Text"},{value:"icon_only",label:"Icon Only"},{value:"text_only",label:"Text Only"}]}}},{name:"excluded_entities",required:!1,selector:{entity:{domain:"device_tracker",multiple:!0}}}]}};try{customElements.get("enhanced-person-card-editor")||customElements.define("enhanced-person-card-editor",k)}catch(m){console.warn("Error registering EnhancedPersonCardEditor:",m)}console.info("%c ENHANCED-PERSON-CARD %c v1.3.0 - Advanced Device Tracking %c","background: #1976d2; color: white; padding: 2px 6px; border-radius: 3px 0 0 3px; font-weight: bold;","background: #388e3c; color: white; padding: 2px 6px; border-radius: 0 3px 3px 0; font-weight: bold;","background: transparent;");console.info("%c Enhanced Person Card %c Loaded successfully %c","background: #4caf50; color: white; padding: 2px 6px; border-radius: 3px 0 0 3px; font-weight: bold;","background: #2196f3; color: white; padding: 2px 6px; border-radius: 0 3px 3px 0;","background: transparent;");})();
+    `;
+  }
+  setConfig(s) {
+    if (!s.entity)
+      throw new Error("You need to define an entity");
+    this._config = s;
+  }
+  static getConfigElement() {
+    return document.createElement("enhanced-person-card-editor");
+  }
+  // Schema for the visual editor
+  static getConfigSchema() {
+    return Xe;
+  }
+  static getStubConfig() {
+    return {
+      type: "custom:enhanced-person-card",
+      entity: "person.your_name",
+      name: "Your Name",
+      icon: "mdi:account",
+      image: "",
+      show_name: !0,
+      show_state: !0,
+      show_devices: !0,
+      badge_style: "icon_text",
+      device_attributes: ["battery_level", "source_type", "zone"],
+      excluded_entities: []
+    };
+  }
+  getCardSize() {
+    const s = this._config;
+    return s?.grid_options?.rows ? Number(s.grid_options.rows) : s?.layout_options?.grid_rows ? Number(s.layout_options.grid_rows) : s && "grid_rows" in s ? Number(s.grid_rows) : 3;
+  }
+  getCardColumns() {
+    const s = this._config;
+    return s?.grid_options?.columns !== void 0 ? s.grid_options.columns : s?.layout_options?.grid_columns !== void 0 ? s.layout_options.grid_columns : s && "grid_columns" in s && s.grid_columns !== void 0 ? s.grid_columns : 1;
+  }
+  updated(s) {
+    super.updated(s);
+  }
+  render() {
+    if (!this.hass || !this._config)
+      return f``;
+    if (!this.hass)
+      return f`<div class="person-card error">
+        <div class="error-icon">⚠️</div>
+        <div class="error-text">Home Assistant not available</div>
+      </div>`;
+    const s = this._config.entity, e = this.hass.states[s];
+    if (!e)
+      return f`<div class="person-card error">
+        <div class="error-icon">❌</div>
+        <div class="error-text">Entity "${s}" not found</div>
+      </div>`;
+    const t = this._config, i = t.name || e.attributes.friendly_name || t.entity, r = e.state, n = t.image || e.attributes.entity_picture, o = t.icon, d = t.show_name !== !1, a = t.show_state !== !1, c = t.show_devices !== !1, h = this._getStateText(r), l = this._getStateClass(r), u = this._getPersonDevices(e);
+    return this._usedSensors.clear(), f`
+      <div class="person-card" data-entity="${t.entity}">
+        ${d ? f`<div class="person-header">
+              <div class="person-name">${i}</div>
+            </div>` : ""}
+        <div class="person-content">
+          <div class="person-left-section">
+            <div class="person-avatar-container">
+              <div class="person-avatar">
+                ${this._renderIcon(n, o, i)}
+              </div>
+              ${a ? f`<div
+                    class="person-status-badge ${l} ${t.badge_style === "icon_only" ? "icon-only" : ""}"
+                  >
+                    ${h}
+                  </div>` : ""}
+            </div>
+          </div>
+          ${c ? f`<div class="person-devices-section">
+                <div class="devices-header">Devices</div>
+                <div class="devices-list">
+                  ${u.length > 0 ? u.map((p) => this._renderDevice(p)) : f`<div class="no-devices">No devices found</div>`}
+                </div>
+              </div>` : ""}
+        </div>
+      </div>
+    `;
+  }
+  _getStateText(s) {
+    const e = this._config?.badge_style || "icon_text", t = this._getStateIcon(s), i = this._getLocationDisplayName(s);
+    switch (e) {
+      case "icon_only":
+        return this._renderMDI(t);
+      case "text_only":
+        return i;
+      case "icon_text":
+      default:
+        return f`${this._renderMDI(t)} ${i}`;
+    }
+  }
+  _getStateIcon(s) {
+    switch (s) {
+      case "home":
+        return "mdi:home";
+      case "not_home":
+        return "mdi:home-export-outline";
+      case "unknown":
+        return "mdi:help-circle-outline";
+      default:
+        return "mdi:map-marker";
+    }
+  }
+  _getLocationDisplayName(s) {
+    if (!s || s === "unknown") return "Unknown";
+    switch (s) {
+      case "home":
+        return "Home";
+      case "not_home":
+        return "Away";
+      case "unknown":
+        return "Unknown";
+    }
+    let e = s.replace(/_/g, " ");
+    return e = e.split(" ").map((t) => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase()).join(" "), e;
+  }
+  _getStateClass(s) {
+    switch (s) {
+      case "home":
+        return "state-home";
+      case "not_home":
+        return "state-away";
+      default:
+        return "state-unknown";
+    }
+  }
+  _getPersonDevices(s) {
+    if (!this.hass || !s) return [];
+    const t = this._config?.excluded_entities || [], i = s.entity_id, r = [];
+    return s.attributes.device_trackers && Array.isArray(s.attributes.device_trackers) && s.attributes.device_trackers.forEach((n) => {
+      if (!t.includes(n)) {
+        const o = this.hass.states[n];
+        o && o.attributes.source_type && r.push(o);
+      }
+    }), r.length === 0 && Object.values(this.hass.states).forEach((n) => {
+      n.entity_id.startsWith("device_tracker.") && !t.includes(n.entity_id) && n.attributes.source_type && n.attributes.person === i && r.push(n);
+    }), r.sort((n, o) => {
+      const d = n.attributes.friendly_name || n.entity_id;
+      return (o.attributes.friendly_name || o.entity_id).length - d.length;
+    }), r;
+  }
+  _renderIcon(s, e, t) {
+    return s ? f`<img
+          src="${s}"
+          alt="${t}"
+          @error="${(i) => i.target.style.display = "none"}"
+        />
+        <div class="fallback-icon" style="display: none;">
+          ${e ? this._renderMDI(e) : this._renderMDI("mdi:account")}
+        </div>` : e ? f`<div class="fallback-icon">${this._renderMDI(e)}</div>` : f`<div class="fallback-icon">
+        ${this._renderMDI("mdi:account")}
+      </div>`;
+  }
+  _renderMDI(s) {
+    return s.startsWith("mdi:") ? f`<ha-icon .icon="${s}"></ha-icon>` : s;
+  }
+  _renderDevice(s) {
+    const e = s.attributes.friendly_name || s.entity_id, t = this._getDeviceIcon(s), i = this._config?.device_attributes || [
+      "battery_level",
+      "gps_accuracy",
+      "source_type"
+    ], r = [];
+    return i.forEach((n) => {
+      if (n === "zone") {
+        const o = s.state, d = this._formatDeviceState(o), a = this._getAttributeIcon("zone", o), c = this._getAttributeLabel("zone");
+        r.push({
+          name: n,
+          label: c,
+          value: o,
+          displayValue: d,
+          icon: a,
+          entityName: e
+        });
+      } else {
+        const o = this._getAttributeEntriesForDevice(
+          s,
+          n
+        );
+        r.push(...o);
+      }
+    }), f`
+      <div class="device-item" data-entity="${s.entity_id}">
+        <div class="device-icon">${this._renderMDI(t)}</div>
+        <div class="device-info">
+          <div class="device-name">${e}</div>
+          ${r.length > 0 ? f`
+                <div class="device-attributes">
+                  ${r.map(
+      (n) => f`
+                      <span
+                        class="device-attribute"
+                        data-attribute="${n.name}"
+                        title="${n.label}: ${n.displayValue} (${n.entityName || e})"
+                      >
+                        <span
+                          class="attribute-icon"
+                          style="color: ${n.icon.color}"
+                        >
+                          ${this._renderMDI(n.icon.icon)}
+                        </span>
+                        <span class="attribute-name">${n.label}:</span>
+                        <span class="attribute-value"
+                          >${n.displayValue}</span
+                        >
+                      </span>
+                    `
+    )}
+                </div>
+              ` : ""}
+        </div>
+      </div>
+    `;
+  }
+  _getDeviceIcon(s) {
+    return s.entity_id.startsWith("device_tracker.") ? s.attributes.source_type === "gps" ? "mdi:cellphone" : s.attributes.source_type === "bluetooth" ? "mdi:bluetooth" : s.attributes.source_type === "router" ? "mdi:router-wireless" : "mdi:crosshairs-gps" : "mdi:devices";
+  }
+  _getAttributeLabel(s) {
+    return {
+      battery_level: "Battery",
+      gps_accuracy: "GPS Accuracy",
+      source_type: "Source",
+      zone: "Zone",
+      latitude: "Latitude",
+      longitude: "Longitude",
+      altitude: "Altitude",
+      course: "Course",
+      speed: "Speed",
+      ip: "IP Address",
+      hostname: "Hostname",
+      mac: "MAC Address",
+      last_seen: "Last Seen"
+    }[s] || s;
+  }
+  _getAttributeIcon(s, e) {
+    switch (s) {
+      case "battery_level": {
+        const t = parseInt(e);
+        return t > 80 ? { icon: "mdi:battery", color: "#4caf50" } : t > 60 ? { icon: "mdi:battery-60", color: "#8bc34a" } : t > 40 ? { icon: "mdi:battery-40", color: "#ff9800" } : t > 20 ? { icon: "mdi:battery-20", color: "#ff5722" } : { icon: "mdi:battery-alert", color: "#f44336" };
+      }
+      case "gps_accuracy": {
+        const t = parseInt(e);
+        return t <= 10 ? { icon: "mdi:crosshairs-gps", color: "#4caf50" } : t <= 50 ? { icon: "mdi:crosshairs-gps", color: "#ff9800" } : { icon: "mdi:crosshairs-question", color: "#f44336" };
+      }
+      case "source_type":
+        switch (e) {
+          case "gps":
+            return { icon: "mdi:crosshairs-gps", color: "#2196f3" };
+          case "bluetooth":
+            return { icon: "mdi:bluetooth", color: "#3f51b5" };
+          case "router":
+            return { icon: "mdi:router-wireless", color: "#607d8b" };
+          default:
+            return { icon: "mdi:help-circle", color: "#757575" };
+        }
+      case "altitude":
+        return { icon: "mdi:elevation-rise", color: "#795548" };
+      case "course":
+        return { icon: "mdi:compass", color: "#9c27b0" };
+      case "speed": {
+        const t = parseInt(e);
+        return t > 50 ? { icon: "mdi:speedometer", color: "#f44336" } : t > 10 ? { icon: "mdi:speedometer-medium", color: "#ff9800" } : { icon: "mdi:speedometer-slow", color: "#4caf50" };
+      }
+      case "zone":
+        return { icon: "mdi:map-marker-radius", color: "#2196f3" };
+      case "latitude":
+      case "longitude":
+        return { icon: "mdi:map-marker", color: "#9c27b0" };
+      case "ip":
+        return { icon: "mdi:ip-network", color: "#607d8b" };
+      case "hostname":
+        return { icon: "mdi:dns", color: "#607d8b" };
+      case "mac":
+        return { icon: "mdi:network", color: "#607d8b" };
+      case "last_seen":
+        return { icon: "mdi:clock-outline", color: "#757575" };
+      default:
+        return { icon: "mdi:information-outline", color: "#757575" };
+    }
+  }
+  _getAttributeDisplayValue(s, e) {
+    switch (s) {
+      case "battery_level":
+        return `${e}%`;
+      case "gps_accuracy":
+        return `${e}m`;
+      case "altitude":
+        return `${e}m`;
+      case "speed":
+        return `${e} km/h`;
+      case "course":
+        return `${e}°`;
+      case "zone":
+        return String(e).replace(/_/g, " ");
+      case "latitude":
+        return `${parseFloat(e).toFixed(4)}°`;
+      case "longitude":
+        return `${parseFloat(e).toFixed(4)}°`;
+      case "ip":
+      case "hostname":
+        return String(e);
+      case "mac":
+        return String(e).toUpperCase();
+      case "last_seen":
+        if (e && (e.includes("T") || e.includes("-")))
+          try {
+            return new Date(e).toLocaleTimeString();
+          } catch (t) {
+            return console.error("Error parsing last_seen date:", t), String(e);
+          }
+        return String(e);
+      default:
+        return String(e);
+    }
+  }
+  _getAttributeEntriesForDevice(s, e) {
+    const t = [], i = /* @__PURE__ */ new Set();
+    if (!this.hass || !this.hass.states) return t;
+    const r = s.attributes.device_id, n = s.entity_id, o = s.attributes.friendly_name || s.entity_id.replace("device_tracker.", ""), a = {
+      battery_level: ["battery_level", "battery"],
+      signal_strength: ["signal_strength", "wifi_signal", "signal"],
+      gps_accuracy: ["gps_accuracy", "accuracy"]
+    }[e] || [e];
+    return !this.hass || !this.hass.states || Object.values(this.hass.states).forEach((c) => {
+      if (!c.entity_id.startsWith("sensor.")) return;
+      const h = c.attributes.friendly_name || c.entity_id;
+      if (i.has(h)) return;
+      let l = !1;
+      if (r && c.attributes.device_id === r && (l = !0), !l) {
+        const m = c.entity_id.toLowerCase(), z = (c.attributes.friendly_name || "").toLowerCase(), k = n.replace("device_tracker.", "").toLowerCase(), H = (o || "").toLowerCase(), be = this.hass && this.hass.states ? Object.values(this.hass.states).filter((v) => v.entity_id.startsWith("device_tracker.")).map((v) => ({
+          entity_id: v.entity_id.replace("device_tracker.", "").toLowerCase(),
+          friendly_name: (v.attributes.friendly_name || "").toLowerCase(),
+          full_entity: v.entity_id
+        })) : [], xe = m === `sensor.${k}` || m.startsWith(`sensor.${k}_`);
+        let Ae = !1;
+        if (xe) {
+          for (const v of be)
+            if (v.entity_id !== k && v.entity_id.includes(k) && (m.includes(v.entity_id) || z.includes(v.friendly_name))) {
+              Ae = !0;
+              break;
+            }
+        }
+        if (xe && !Ae)
+          l = !0;
+        else if (!l && H && H.length > 3) {
+          const v = z.includes(H) || m.includes(H.replace(/\s+/g, "_"));
+          let we = !1;
+          if (v) {
+            for (const G of be)
+              if (G.friendly_name !== H && G.friendly_name.length > H.length && (z.includes(G.friendly_name) || m.includes(
+                G.friendly_name.replace(/\s+/g, "_")
+              ))) {
+                we = !0;
+                break;
+              }
+          }
+          v && !we && (l = !0);
+        }
+      }
+      if (!l) return;
+      const u = c.entity_id.toLowerCase(), p = (c.attributes.friendly_name || "").toLowerCase();
+      if (!a.some(
+        (m) => u.includes(m) || p.includes(m)
+      ) || this._usedSensors.has(c.entity_id) || [
+        "battery_state",
+        "charging_state",
+        "power_state"
+      ].some(
+        (m) => u.includes(m) || p.includes(m)
+      )) return;
+      const P = c.state;
+      if (P && P !== "unknown" && P !== "unavailable") {
+        const m = this._getAttributeDisplayValue(
+          e,
+          P
+        ), z = this._getAttributeIcon(e, P), k = this._getAttributeLabel(e);
+        t.push({
+          name: e,
+          label: k,
+          value: P,
+          displayValue: m,
+          icon: z,
+          entityName: h
+        }), i.add(h), this._usedSensors.add(c.entity_id);
+      }
+    }), t;
+  }
+  _formatDeviceState(s) {
+    if (!s || s === "unknown") return "Unknown";
+    switch (s) {
+      case "home":
+        return "Home";
+      case "not_home":
+        return "Away";
+      case "unknown":
+        return "Unknown";
+    }
+    let e = s.replace(/_/g, " ");
+    return e = e.split(" ").map((t) => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase()).join(" "), e;
+  }
+  static get properties() {
+    return {
+      hass: { attribute: !1 },
+      _config: { attribute: !1 }
+    };
+  }
+};
+ae([
+  ie({ attribute: !1 })
+], K.prototype, "hass", 2);
+ae([
+  ye()
+], K.prototype, "_config", 2);
+ae([
+  ye()
+], K.prototype, "_usedSensors", 2);
+K = ae([
+  Je("enhanced-person-card")
+], K);
+var rs = I;
+window.customCards || (window.customCards = []);
+window.customCards.push({
+  type: "enhanced-person-card",
+  name: "Enhanced Person Card",
+  description: "a",
+  preview: !0,
+  documentationURL: "https://github.com/dmoo500/ha-enhanced-person-card"
+});
+console.log("✅ EnhancedPersonCard fully loaded and registered");
+export {
+  K as EnhancedPersonCard,
+  rs as default
+};
+//# sourceMappingURL=enhanced-person-card.js.map
