@@ -1,7 +1,7 @@
 import { LitElement, html, css, TemplateResult } from "lit";
 import { use } from "lit-translate";
 import { customElement, property, state } from "lit/decorators.js";
-//import { fireEvent } from "custom-card-helpers";
+import { fireEvent } from "custom-card-helpers";
 import type {
   HomeAssistant,
   LovelaceCardEditor,
@@ -149,18 +149,8 @@ export class EnhancedPersonCardEditor
       `;
     }
 
-    const data = {
-      entity: this._config.entity || "",
-      name: this._config.name || "",
-      image: this._config.image || "",
-      icon: this._config.icon || "",
-      show_name: this._config.show_name ?? true,
-      show_state: this._config.show_state ?? true,
-      show_devices: this._config.show_devices ?? true,
-      badge_style: this._config.badge_style || "icon_text",
-      device_attributes: this._config.device_attributes || [],
-      excluded_entities: this._config.excluded_entities || [],
-    };
+  // Übernehme alle Felder aus der Original-Config, damit HA-Layout-Optionen erhalten bleiben
+  const data = { ...this._config };
 
     return html`
       <div class="card-config">
@@ -244,12 +234,12 @@ export class EnhancedPersonCardEditor
     if (!this._config || !this.hass) {
       return;
     }
-
+    // Merge: alle alten Felder + neue Werte aus dem Form
     const newConfig = {
-      type: "custom:enhanced-person-card",
+      ...this._config,
       ...ev.detail.value,
+      type: "custom:enhanced-person-card",
     };
-
     // Remove empty values
     Object.keys(newConfig).forEach((key) => {
       if (
@@ -259,17 +249,8 @@ export class EnhancedPersonCardEditor
         delete (newConfig as any)[key];
       }
     });
-
     this._config = newConfig;
-    // fireEvent(this, "config-changed", { config: this._config });
-    // Dispatch config-changed event
-    const event = new CustomEvent("config-changed", {
-      detail: { config: this._config },
-      bubbles: true,
-      composed: true,
-    });
-
-    (this as any).dispatchEvent(event);
+    fireEvent(this, "config-changed", { config: this._config });
   }
 
   static get properties() {

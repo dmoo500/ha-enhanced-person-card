@@ -6,6 +6,7 @@ import {
   schema,
 } from "./types/home-assistant";
 import { EnhancedPersonCardEditor } from "./enhanced-person-card-editor";
+import { fireEvent } from "custom-card-helpers";
 
 // Extend Window interface for customCards
 declare global {
@@ -706,40 +707,76 @@ export class EnhancedPersonCard extends LitElement {
       }
     });
     return html`
-      <div class="device-item" data-entity="${deviceEntity.entity_id}">
+      <div
+        class="device-item"
+        data-entity="${deviceEntity.entity_id}"
+        @click=${this._onDeviceClick}
+        tabindex="0"
+        style="cursor: pointer;"
+      >
         <div class="device-icon">${this._renderMDI(deviceIcon)}</div>
         <div class="device-info">
           <div class="device-name">${deviceName}</div>
           ${availableAttributes.length > 0
             ? html`
                 <div class="device-attributes">
-                  ${availableAttributes.map(
-                    (attr) => html`
-                      <span
-                        class="device-attribute"
-                        data-attribute="${attr.name}"
-                        title="${attr.label}: ${attr.displayValue} (${attr.entityName ||
-                        deviceName})"
-                      >
+                  ${(() => {
+                    // Zähle, wie oft jedes Label vorkommt
+                    const labelCounts: Record<string, number> = {};
+                    availableAttributes.forEach(attr => {
+                      labelCounts[attr.label] = (labelCounts[attr.label] || 0) + 1;
+                    });
+                    return availableAttributes.map(
+                      (attr) => html`
                         <span
-                          class="attribute-icon"
-                          style="color: ${attr.icon.color}"
+                          class="device-attribute"
+                          data-attribute="${attr.name}"
+                          title="${attr.label}: ${attr.displayValue} (${attr.entityName || deviceName})"
                         >
-                          ${this._renderMDI(attr.icon.icon)}
+                          <span
+                            class="attribute-icon"
+                            style="color: ${attr.icon.color}"
+                          >
+                            ${this._renderMDI(attr.icon.icon)}
+                          </span>
+                          <span class="attribute-name">
+                            ${attr.label}
+                            ${labelCounts[attr.label] > 1 && attr.entityName ? html`<span class="attribute-entity"> (${attr.entityName})</span>` : ''}
+                            :
+                          </span>
+                          <span class="attribute-value"
+                            >${attr.displayValue}</span
+                          >
                         </span>
-                        <span class="attribute-name">${attr.label}:</span>
-                        <span class="attribute-value"
-                          >${attr.displayValue}</span
-                        >
-                      </span>
-                    `,
-                  )}
+                      `
+                    );
+                  })()}
                 </div>
               `
             : ""}
         </div>
       </div>
     `;
+  }
+  /**
+   * Click-Handler für Geräte: holt Entity-ID aus data-entity und öffnet Dialog
+   */
+  private _onDeviceClick(e: Event) {
+    console.debug("🔍 Device clicked, showing more info");
+    const target = e.currentTarget as HTMLElement;
+    console.debug("🔍 Click target:", target);
+    const entityId = target.getAttribute("data-entity");
+    if (entityId) {
+      this._showMoreInfo(entityId);
+    }
+    e.stopPropagation();
+  }
+    /**
+   * Öffnet das Standard-HA-Dialog für das angeklickte Gerät
+   */
+  private _showMoreInfo(entityId: string) {
+    console.debug("🔍 Showing more info for", entityId);
+    fireEvent(this, "hass-more-info", { entityId: entityId });
   }
 
   private _getDeviceIcon(deviceEntity: any) {

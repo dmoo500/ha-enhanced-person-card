@@ -88,9 +88,9 @@ export const schema = [
           "speed",
           "direction",
         ],
-        placeholder: "e.g. device_tracker, bluetooth",
+        placeholder: "e.g. battery, bluetooth",
       },
     },
   },
-  { name: "excluded_entities", selector: { entity: { multiple: true } } },
+  { name: "excluded_entities", selector: { entity: { multiple: true }, domain: "device_tracker" } },
 ];
