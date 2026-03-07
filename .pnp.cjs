@@ -326,7 +326,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["ignore", "npm:5.3.2"],\
             ["import-fresh", "npm:3.3.1"],\
             ["js-yaml", "npm:4.1.0"],\
-            ["minimatch", "npm:3.1.2"],\
+            ["minimatch", "npm:3.1.5"],\
             ["strip-json-comments", "npm:3.1.1"]\
           ],\
           "linkType": "HARD"\
@@ -412,7 +412,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@humanwhocodes/config-array", "npm:0.13.0"],\
             ["@humanwhocodes/object-schema", "npm:2.0.3"],\
             ["debug", "virtual:643ed7cc338bcf145a82d8b05b3bef6bcf150ca545df386225596f10ce53cc90b88b3ca83e348ade1ccea5f3f8e76c92d2f0e2ba544da60d40aff9921c56872d#npm:4.4.1"],\
-            ["minimatch", "npm:3.1.2"]\
+            ["minimatch", "npm:3.1.5"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -1866,7 +1866,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["json-stable-stringify-without-jsonify", "npm:1.0.1"],\
             ["levn", "npm:0.4.1"],\
             ["lodash.merge", "npm:4.6.2"],\
-            ["minimatch", "npm:3.1.2"],\
+            ["minimatch", "npm:3.1.5"],\
             ["natural-compare", "npm:1.4.0"],\
             ["optionator", "npm:0.9.4"],\
             ["strip-ansi", "npm:6.0.1"],\
@@ -2024,7 +2024,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["hasown", "npm:2.0.2"],\
             ["is-core-module", "npm:2.16.1"],\
             ["is-glob", "npm:4.0.3"],\
-            ["minimatch", "npm:3.1.2"],\
+            ["minimatch", "npm:3.1.5"],\
             ["object.fromentries", "npm:2.0.8"],\
             ["object.groupby", "npm:1.0.3"],\
             ["object.values", "npm:1.2.1"],\
@@ -2462,7 +2462,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["fs.realpath", "npm:1.0.0"],\
             ["inflight", "npm:1.0.6"],\
             ["inherits", "npm:2.0.4"],\
-            ["minimatch", "npm:3.1.2"],\
+            ["minimatch", "npm:3.1.5"],\
             ["once", "npm:1.4.0"],\
             ["path-is-absolute", "npm:1.0.1"]\
           ],\
@@ -3319,10 +3319,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["minimatch", [\
-        ["npm:3.1.2", {\
-          "packageLocation": "./.yarn/cache/minimatch-npm-3.1.2-9405269906-c154e56640.zip/node_modules/minimatch/",\
+        ["npm:3.1.5", {\
+          "packageLocation": "./.yarn/cache/minimatch-npm-3.1.5-86958baf50-47ef6f412c.zip/node_modules/minimatch/",\
           "packageDependencies": [\
-            ["minimatch", "npm:3.1.2"],\
+            ["minimatch", "npm:3.1.5"],\
             ["brace-expansion", "npm:1.1.12"]\
           ],\
           "linkType": "HARD"\
