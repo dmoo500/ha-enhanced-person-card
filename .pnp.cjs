@@ -1435,7 +1435,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["home-assistant-js-websocket", "npm:6.1.1"],\
             ["intl-messageformat", "npm:9.13.0"],\
             ["lit", "npm:2.8.0"],\
-            ["rollup", "npm:2.79.2"],\
+            ["rollup", "npm:2.80.0"],\
             ["superstruct", "npm:0.15.5"],\
             ["typescript", "patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=289587"]\
           ],\
@@ -3894,10 +3894,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["rollup", [\
-        ["npm:2.79.2", {\
-          "packageLocation": "./.yarn/cache/rollup-npm-2.79.2-1b08e69c0e-df7aa4c8b9.zip/node_modules/rollup/",\
+        ["npm:2.80.0", {\
+          "packageLocation": "./.yarn/cache/rollup-npm-2.80.0-f66ec15aec-3eeef19adb.zip/node_modules/rollup/",\
           "packageDependencies": [\
-            ["rollup", "npm:2.79.2"],\
+            ["rollup", "npm:2.80.0"],\
             ["fsevents", "patch:fsevents@npm%3A2.3.3#~builtin<compat/fsevents>::version=2.3.3&hash=df0bf1"]\
           ],\
           "linkType": "HARD"\
