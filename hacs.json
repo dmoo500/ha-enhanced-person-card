@@ -5,6 +5,5 @@
   "render_readme": true,
   "iot_class": "Local Polling",
   "homeassistant": "2025.0.0",
-  "domains": ["person"],
-  "persistent_directory": false
+  "domains": ["person"]
 }
