@@ -63,5 +63,17 @@
     "custom-card-helpers": "^1.9.0",
     "lit": "^3.1.4",
     "lit-translate": "^2.0.1"
+  },
+  "resolutions": {
+    "vite/rollup": "^4.59.0",
+    "@typescript-eslint/typescript-estree/minimatch": "^9.0.9"
+  },
+  "overrides": {
+    "vite": {
+      "rollup": "^4.59.0"
+    },
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "^9.0.9"
+    }
   }
 }
