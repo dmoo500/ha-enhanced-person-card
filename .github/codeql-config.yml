@@ -1,0 +1,9 @@
+name: "CodeQL config"
+
+paths:
+  - src
+
+paths-ignore:
+  - enhanced-person-card.js
+  - node_modules
+  - "**/*.min.js"
