@@ -1,8 +1,15 @@
 # Enhanced Person Card
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/dmoo500/ha-enhanced-person-card)](https://github.com/dmoo500/ha-enhanced-person-card/releases)
-[![GitHub](https://img.shields.io/github/license/dmoo500/ha-enhanced-person-card)](LICENSE)
+[![GitHub release](https://img.shields.io/github/v/release/dmoo500/ha-enhanced-person-card)](https://github.com/dmoo500/ha-enhanced-person-card/releases)
+[![GitHub downloads](https://img.shields.io/github/downloads/dmoo500/ha-enhanced-person-card/total)](https://github.com/dmoo500/ha-enhanced-person-card/releases)
+[![License](https://img.shields.io/github/license/dmoo500/ha-enhanced-person-card)](LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/dmoo500/ha-enhanced-person-card)](https://github.com/dmoo500/ha-enhanced-person-card/issues)
+[![GitHub stars](https://img.shields.io/github/stars/dmoo500/ha-enhanced-person-card)](https://github.com/dmoo500/ha-enhanced-person-card/stargazers)
+[![GitHub watchers](https://img.shields.io/github/watchers/dmoo500/ha-enhanced-person-card)](https://github.com/dmoo500/ha-enhanced-person-card/watchers)
+[![GitHub last commit](https://img.shields.io/github/last-commit/dmoo500/ha-enhanced-person-card)](https://github.com/dmoo500/ha-enhanced-person-card/commits)
+[![Maintenance](https://img.shields.io/maintenance/yes/2026)](https://github.com/dmoo500/ha-enhanced-person-card)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)](https://www.typescriptlang.org/)
 
 An advanced person card for Home Assistant with intelligent device tracking, comprehensive sensor integration, and responsive grid layout support.
 
