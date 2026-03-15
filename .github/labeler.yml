@@ -1,6 +1,6 @@
 # Labels automatically applied to PRs based on changed file paths
 
-"bug fix":
+"source code":
   - changed-files:
       - any-glob-to-any-file: "src/**"
 

@@ -1,7 +1,7 @@
 name: Auto Label
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened]
   issues:
     types: [opened, reopened]
@@ -15,7 +15,7 @@ jobs:
   label-pr:
     name: Label Pull Request
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request_target'
     steps:
       - name: Label based on changed files
         uses: actions/labeler@v5
@@ -34,18 +34,19 @@ jobs:
           script: |
             const title = context.payload.issue.title.toLowerCase();
             const body = (context.payload.issue.body || '').toLowerCase();
+            const text = title + ' ' + body;
             const labels = [];
 
-            if (title.includes('bug') || title.includes('error') || title.includes('broken') || title.includes('fix')) {
+            if (text.includes('bug') || text.includes('error') || text.includes('broken') || text.includes('fix')) {
               labels.push('bug');
             }
-            if (title.includes('feature') || title.includes('enhancement') || title.includes('add') || title.includes('request')) {
+            if (text.includes('feature') || text.includes('enhancement') || text.includes('add') || text.includes('request')) {
               labels.push('enhancement');
             }
-            if (title.includes('docs') || title.includes('documentation') || title.includes('readme')) {
+            if (text.includes('docs') || text.includes('documentation') || text.includes('readme')) {
               labels.push('documentation');
             }
-            if (title.includes('question') || title.includes('help') || title.includes('how')) {
+            if (text.includes('question') || text.includes('help') || text.includes('how')) {
               labels.push('question');
             }
 
