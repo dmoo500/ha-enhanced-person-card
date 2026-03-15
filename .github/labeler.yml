@@ -1,0 +1,37 @@
+# Labels automatically applied to PRs based on changed file paths
+
+"bug fix":
+  - changed-files:
+      - any-glob-to-any-file: "src/**"
+
+"documentation":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "README.md"
+          - "CHANGELOG.md"
+          - "docs/**"
+
+"ci/cd":
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/workflows/**"
+          - ".github/*.yml"
+
+"configuration":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "hacs.json"
+          - "package.json"
+          - "tsconfig.json"
+          - "vite.config.js"
+
+"typescript":
+  - changed-files:
+      - any-glob-to-any-file: "src/**/*.ts"
+
+"dependencies":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "package.json"
+          - "yarn.lock"
+          - ".yarn/**"
