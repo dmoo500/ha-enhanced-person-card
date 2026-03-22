@@ -1,6 +1,12 @@
 # Dependencies
 node_modules/
 
+# Yarn PnP artifacts (not used with nodeLinker: node-modules)
+.pnp.cjs
+.pnp.loader.mjs
+.yarn/install-state.gz
+.yarn/unplugged/
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
