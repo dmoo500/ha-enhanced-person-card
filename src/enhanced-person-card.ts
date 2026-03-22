@@ -56,10 +56,13 @@ export class EnhancedPersonCard extends LitElement {
             --ha-card-background,
             var(--card-background-color, #fff)
             );
-            border-radius: 16px;
-            box-shadow: var(
-            --ha-card-box-shadow,
-            0 4px 20px var(--box-shadow-color, rgba(0, 0, 0, 0.1))
+            border-radius: var(--ha-card-border-radius, 12px);
+            box-shadow: var(--ha-card-box-shadow, none);
+            border-width: var(--ha-card-border-width, 1px);
+            border-style: solid;
+            border-color: var(
+            --ha-card-border-color,
+            var(--divider-color, #e0e0e0)
             );
             font-family: var(
             --primary-font-family,
