@@ -26,11 +26,11 @@ An advanced person card for Home Assistant with intelligent device tracking, com
 
 with Name
 
-<img src="docs/images/screenshot_with_name.png" width="250" />
+![Screenshot with name](docs/images/screenshot_with_name.png)
 
 without Name
 
-<img src="docs/images/screenshot_2devices.png" width="250" />
+![Screenshot with 2 devices](docs/images/screenshot_2devices.png)
 
 ## 📦 Installation
 

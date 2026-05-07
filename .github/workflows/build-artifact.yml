@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: build-artifact-main
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
@@ -33,10 +37,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add enhanced-person-card.js
+          git add enhanced-person-card.js enhanced-person-card.js.map
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
+            git pull --rebase
             git commit -m "chore: rebuild enhanced-person-card.js [skip ci]"
             git push
           fi
