@@ -1,5 +1,3 @@
 {
-  "name": "Enhanced Person Card",
-  "filename": "enhanced-person-card.js",
-  "homeassistant": "2024.1.0"
+  "name": "Enhanced Person Card"
 }

@@ -1,5 +1,7 @@
 # Enhanced Person Card
 
+<img src="https://raw.githubusercontent.com/dmoo500/ha-enhanced-person-card/main/docs/images/screenshot_with_name.png" alt="Enhanced Person Card Screenshot" width="250" />
+
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 [![GitHub release](https://img.shields.io/github/v/release/dmoo500/ha-enhanced-person-card)](https://github.com/dmoo500/ha-enhanced-person-card/releases)
 [![GitHub downloads](https://img.shields.io/github/downloads/dmoo500/ha-enhanced-person-card/total)](https://github.com/dmoo500/ha-enhanced-person-card/releases)
