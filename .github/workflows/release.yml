@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "v*"
+      - "[0-9]*"
 
 permissions:
   contents: write
@@ -31,7 +32,9 @@ jobs:
 
       - name: Get version from tag
         id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          echo "VERSION=${TAG#v}" >> $GITHUB_OUTPUT
 
       - name: Create release archive
         run: |
