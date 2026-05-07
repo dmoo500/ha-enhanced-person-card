@@ -18,6 +18,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Pull latest changes
+        run: git pull --rebase
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -41,7 +46,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git pull --rebase
             git commit -m "chore: rebuild enhanced-person-card.js [skip ci]"
             git push
           fi
