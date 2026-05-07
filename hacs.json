@@ -1,4 +1,6 @@
 {
   "name": "Enhanced Person Card",
-  "filename": "enhanced-person-card.js"
+  "filename": "enhanced-person-card.js",
+  "render_readme": true,
+  "homeassistant": "2025.0.0"
 }
