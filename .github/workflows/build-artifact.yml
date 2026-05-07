@@ -22,6 +22,9 @@ jobs:
           ref: main
           fetch-depth: 0
 
+      - name: Pull latest changes
+        run: git pull --rebase origin main
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -47,6 +50,5 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "chore: rebuild enhanced-person-card.js [skip ci]"
-            git pull --rebase origin main
             git push
           fi
