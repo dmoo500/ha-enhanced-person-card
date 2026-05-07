@@ -26,7 +26,7 @@ jobs:
 
       - name: Get Yarn cache directory
         id: yarn-cache-dir
-        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+        run: echo "dir=$(yarn config get cacheFolder)" >> "$GITHUB_OUTPUT"
 
       - name: Cache Yarn dependencies
         uses: actions/cache@v4
@@ -73,6 +73,8 @@ jobs:
     if: github.event_name == 'release'
     needs: [lint-and-build, validate-hacs]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
@@ -88,7 +90,7 @@ jobs:
 
       - name: Get Yarn cache directory
         id: yarn-cache-dir
-        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+        run: echo "dir=$(yarn config get cacheFolder)" >> "$GITHUB_OUTPUT"
 
       - name: Cache Yarn dependencies
         uses: actions/cache@v4
