@@ -26,11 +26,11 @@ An advanced person card for Home Assistant with intelligent device tracking, com
 
 with Name
 
-![Screenshot with name](docs/images/screenshot_with_name.png)
+![Screenshot with name](https://raw.githubusercontent.com/dmoo500/ha-enhanced-person-card/main/docs/images/screenshot_with_name.png)
 
 without Name
 
-![Screenshot with 2 devices](docs/images/screenshot_2devices.png)
+![Screenshot with 2 devices](https://raw.githubusercontent.com/dmoo500/ha-enhanced-person-card/main/docs/images/screenshot_2devices.png)
 
 ## 📦 Installation
 
