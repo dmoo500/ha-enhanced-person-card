@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "An advanced person card for Home Assistant with intelligent device tracking, comprehensive sensor integration, and responsive grid layout support",
   "main": "enhanced-person-card.js",
+  "packageManager": "yarn@4.12.0",
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
